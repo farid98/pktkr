@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Maximize2 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Config, Data, Layout } from "plotly.js";
 
 import type { MarketRow } from "@/lib/market-types";
@@ -27,7 +27,11 @@ function signedPercent(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
 }
 
-function makeTrace(rows: MarketRow[], metric: Metric): Data {
+function makeTrace(
+  rows: MarketRow[],
+  metric: Metric,
+  compactLabels: boolean,
+): Data {
   const sectors = Array.from(new Set(rows.map(({ sector }) => sector))).sort();
   const valueFor = (row: MarketRow) =>
     Math.max(metric === "marketCap" ? row.marketCap : row.volume, 1);
@@ -61,7 +65,11 @@ function makeTrace(rows: MarketRow[], metric: Metric): Data {
       parents.push(sectorId);
       values.push(valueFor(row));
       colors.push(row.percentChange);
-      text.push(`${row.symbol}<br>${signedPercent(row.percentChange)}`);
+      text.push(
+        compactLabels
+          ? row.symbol
+          : `${row.symbol}<br>${signedPercent(row.percentChange)}`,
+      );
       customdata.push([
         row.company,
         row.symbol,
@@ -102,7 +110,11 @@ function makeTrace(rows: MarketRow[], metric: Metric): Data {
     root: { color: "#3f3f3f" },
     tiling: { packing: "squarify", pad: 3 },
     pathbar: { visible: true, thickness: 26 },
-    textfont: { family: "Arial, sans-serif", size: 13, color: "#30343b" },
+    textfont: {
+      family: "Arial, sans-serif",
+      size: compactLabels ? 10 : 13,
+      color: "#30343b",
+    },
   } as Data;
 }
 
@@ -114,8 +126,12 @@ export function MarketTreemap({
   date: string;
 }) {
   const [metric, setMetric] = useState<Metric>("marketCap");
+  const [compactLabels, setCompactLabels] = useState(false);
   const chartShell = useRef<HTMLDivElement>(null);
-  const trace = useMemo(() => makeTrace(rows, metric), [rows, metric]);
+  const trace = useMemo(
+    () => makeTrace(rows, metric, compactLabels),
+    [rows, metric, compactLabels],
+  );
   const maxChange = Math.max(
     ...rows.map(({ percentChange }) => Math.abs(percentChange)),
     1,
@@ -144,8 +160,20 @@ export function MarketTreemap({
       font: { color: "#172033", size: 15 },
       align: "left",
     },
-    uniformtext: { minsize: 10, mode: "hide" },
+    uniformtext: { minsize: compactLabels ? 7 : 10, mode: "hide" },
   } as Partial<Layout>;
+
+  useEffect(() => {
+    const chart = chartShell.current;
+    if (!chart) return;
+
+    const updateLabelMode = () => setCompactLabels(chart.clientWidth < 640);
+    updateLabelMode();
+
+    const observer = new ResizeObserver(updateLabelMode);
+    observer.observe(chart);
+    return () => observer.disconnect();
+  }, []);
 
   const config: Partial<Config> = {
     responsive: true,

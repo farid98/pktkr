@@ -7,16 +7,6 @@ import { getMarketSession } from "@/lib/market-data";
 
 export const dynamic = "force-dynamic";
 
-function displayDate(value: string) {
-  return new Intl.DateTimeFormat("en-PK", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "Asia/Karachi",
-  }).format(new Date(`${value}T12:00:00+05:00`));
-}
-
 function displayTimestamp(value: string) {
   return new Intl.DateTimeFormat("en-PK", {
     day: "numeric",
@@ -74,21 +64,8 @@ export default async function Home({
             <h1 className="text-3xl font-bold tracking-[-0.04em] text-[#203a63] sm:text-4xl">
               KSE-100 Market Map
             </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-              All shares in the KSE-100, grouped by sector. Rectangle size
-              represents market cap or trade volume; colour shows daily price
-              change.
-            </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
-              <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">
-                Viewing
-              </p>
-              <p className="mt-0.5 text-sm font-semibold text-slate-800">
-                {displayDate(date)}
-              </p>
-            </div>
+          <div className="flex flex-wrap items-center">
             <DateSelector
               currentDate={date}
               sessions={[...index.sessions].reverse()}
@@ -105,10 +82,11 @@ export default async function Home({
           <div className="max-w-4xl leading-6">
             <p>
               <strong className="font-semibold text-slate-700">How to read it:</strong>{" "}
-              larger rectangles represent larger companies or heavier trading,
-              depending on the selected view. Green indicates a positive daily
-              change and red a negative change. Figures are informational and
-              are not investment advice.
+              all shares in the KSE-100 are grouped by sector. Larger rectangles
+              represent larger companies or heavier trading, depending on the
+              selected view. Green indicates a positive daily change and red a
+              negative change. Figures are informational and are not investment
+              advice.
             </p>
             {updatedAt ? (
               <p className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
