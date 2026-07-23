@@ -126,8 +126,9 @@ export function MarketTreemap({
     paper_bgcolor: "#ffffff",
     plot_bgcolor: "#ffffff",
     font: { family: "Arial, sans-serif", color: "#2c4265", size: 13 },
-    margin: { t: 8, l: 0, r: 86, b: 0 },
+    margin: { t: 8, l: 0, r: 0, b: 0 },
     coloraxis: {
+      showscale: false,
       colorscale: [
         [0, "#b2182b"],
         [0.5, "#f7f7f7"],
@@ -136,15 +137,6 @@ export function MarketTreemap({
       cmin: -maxChange,
       cmax: maxChange,
       cmid: 0,
-      colorbar: {
-        title: { text: "Daily % change", side: "top" },
-        thickness: 28,
-        len: 0.94,
-        x: 1.015,
-        xanchor: "left",
-        outlinewidth: 0,
-        tickfont: { size: 12 },
-      },
     },
     hoverlabel: {
       bgcolor: "#ffffff",
