@@ -1,0 +1,17 @@
+{
+  "latest": "2026-07-23",
+  "sessions": [
+    {
+      "date": "2026-07-21",
+      "file": "/data/daily/kse100_2026-07-21.csv"
+    },
+    {
+      "date": "2026-07-22",
+      "file": "/data/daily/kse100_2026-07-22.csv"
+    },
+    {
+      "date": "2026-07-23",
+      "file": "/data/daily/kse100_2026-07-23.csv"
+    }
+  ]
+}

@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# pktkr
 
-## Getting Started
+A local-first Next.js and Tailwind website for exploring KSE-100 market treemaps. Plotly renders each selected session directly from its dated CSV.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Data layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+public/data/
+  index.json
+  latest.json
+  daily/
+    kse100_2026-07-21.csv
+    kse100_2026-07-22.csv
+    kse100_2026-07-23.csv
+```
 
-## Learn More
+`index.json` contains all available sessions and identifies the latest date. Older CSVs are retained, so the homepage date selector can reconstruct any saved session.
 
-To learn more about Next.js, take a look at the following resources:
+The sibling `psx2` project updates this folder after a successful trading-day pipeline run:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cd /Users/farid/dev/finance/psx2
+uv run python scripts/publishing/export_to_pktkr.py --date YYYY-MM-DD
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The website does not scrape PSX and does not require Python. A future Git/Vercel publishing step can commit the new dated CSV and updated JSON manifests after each validated session.
 
-## Deploy on Vercel
+## Checks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+```
