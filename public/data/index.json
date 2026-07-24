@@ -3,15 +3,18 @@
   "sessions": [
     {
       "date": "2026-07-21",
-      "file": "/data/daily/kse100_2026-07-21.csv"
+      "file": "/data/daily/kse100_2026-07-21.csv",
+      "report": "/data/reports/kse100_2026-07-21_summary.md"
     },
     {
       "date": "2026-07-22",
-      "file": "/data/daily/kse100_2026-07-22.csv"
+      "file": "/data/daily/kse100_2026-07-22.csv",
+      "report": "/data/reports/kse100_2026-07-22_summary.md"
     },
     {
       "date": "2026-07-23",
-      "file": "/data/daily/kse100_2026-07-23.csv"
+      "file": "/data/daily/kse100_2026-07-23.csv",
+      "report": "/data/reports/kse100_2026-07-23_summary.md"
     }
   ]
 }

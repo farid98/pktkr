@@ -12,6 +12,7 @@ export type MarketRow = {
 export type MarketSession = {
   date: string;
   file: string;
+  report?: string;
 };
 
 export type MarketIndex = {

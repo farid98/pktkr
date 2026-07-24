@@ -15,6 +15,7 @@ export async function getMarketSession(requestedDate?: string): Promise<{
   date: string;
   rows: MarketRow[];
   index: MarketIndex;
+  reportMarkdown: string | null;
 }> {
   const index = await getMarketIndex();
   const session =
@@ -48,5 +49,15 @@ export async function getMarketSession(requestedDate?: string): Promise<{
     throw new Error(`Expected 100 unique KSE-100 rows for ${session.date}`);
   }
 
-  return { date: session.date, rows, index };
+  let reportMarkdown: string | null = null;
+  if (session.report) {
+    const relativeReport = session.report.replace(/^\/data\//, "");
+    reportMarkdown = await readFile(path.join(DATA_ROOT, relativeReport), "utf8");
+    const expectedHeading = `# KSE-100 Daily Market Summary — ${session.date}`;
+    if (reportMarkdown.split(/\r?\n/, 1)[0] !== expectedHeading) {
+      throw new Error(`Daily report does not match market session ${session.date}`);
+    }
+  }
+
+  return { date: session.date, rows, index, reportMarkdown };
 }

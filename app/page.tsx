@@ -1,6 +1,7 @@
 import { ArrowDownToLine, Clock3 } from "lucide-react";
 import Link from "next/link";
 
+import { DailyReport } from "@/components/daily-report";
 import { DateSelector } from "@/components/date-selector";
 import { MarketTreemap } from "@/components/market-treemap";
 import { getMarketSession } from "@/lib/market-data";
@@ -24,7 +25,8 @@ export default async function Home({
   searchParams: Promise<{ date?: string }>;
 }) {
   const { date: requestedDate } = await searchParams;
-  const { date, rows, index } = await getMarketSession(requestedDate);
+  const { date, rows, index, reportMarkdown } =
+    await getMarketSession(requestedDate);
   const file = index.sessions.find((session) => session.date === date)?.file ?? "#";
   const updatedAt = rows[0]?.downloadedAtUtc;
 
@@ -44,6 +46,11 @@ export default async function Home({
             <a href="#market-map" className="hidden hover:text-slate-900 sm:block">
               Market map
             </a>
+            {reportMarkdown ? (
+              <a href="#daily-report" className="hover:text-slate-900">
+                Daily report
+              </a>
+            ) : null}
             <a href="#methodology" className="hover:text-slate-900">
               Methodology
             </a>
@@ -104,6 +111,8 @@ export default async function Home({
             Download this session’s CSV
           </a>
         </section>
+
+        {reportMarkdown ? <DailyReport markdown={reportMarkdown} /> : null}
       </main>
     </div>
   );

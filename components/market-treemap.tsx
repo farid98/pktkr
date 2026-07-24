@@ -23,8 +23,8 @@ const metricLabels: Record<Metric, string> = {
   volume: "Trade Volume",
 };
 
-function signedPercent(value: number) {
-  return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+function signedPercent(value: number, precision = 2) {
+  return `${value >= 0 ? "+" : ""}${value.toFixed(precision)}%`;
 }
 
 function makeTrace(
@@ -67,7 +67,7 @@ function makeTrace(
       colors.push(row.percentChange);
       text.push(
         compactLabels
-          ? row.symbol
+          ? `${row.symbol}<br>${signedPercent(row.percentChange, 1)}`
           : `${row.symbol}<br>${signedPercent(row.percentChange)}`,
       );
       customdata.push([
@@ -99,20 +99,21 @@ function makeTrace(
     values,
     text,
     texttemplate: "%{text}",
+    textposition: "middle center",
     customdata,
     hovertemplate,
     branchvalues: "total",
     marker: {
       colors,
       coloraxis: "coloraxis",
-      line: { color: "#ffffff", width: 1.5 },
+      line: { color: "#ffffff", width: 1 },
     },
     root: { color: "#3f3f3f" },
-    tiling: { packing: "squarify", pad: 3 },
+    tiling: { packing: "squarify", pad: 1 },
     pathbar: { visible: true, thickness: 26 },
     textfont: {
       family: "Arial, sans-serif",
-      size: compactLabels ? 10 : 13,
+      size: compactLabels ? 4 : 13,
       color: "#30343b",
     },
   } as Data;
@@ -160,7 +161,7 @@ export function MarketTreemap({
       font: { color: "#172033", size: 15 },
       align: "left",
     },
-    uniformtext: { minsize: compactLabels ? 7 : 10, mode: "hide" },
+    uniformtext: { minsize: compactLabels ? 4 : 10, mode: "hide" },
   } as Partial<Layout>;
 
   useEffect(() => {
@@ -174,6 +175,45 @@ export function MarketTreemap({
     observer.observe(chart);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const chart = chartShell.current;
+    if (!chart || !compactLabels) return;
+
+    const applyLabelSizes = () => {
+      const slices = chart.querySelectorAll<SVGGElement>(".treemaplayer g.slice");
+
+      slices.forEach((slice) => {
+        const rectangle = slice.querySelector<SVGPathElement>("path.surface");
+        const label = slice.querySelector<SVGTextElement>("text.slicetext");
+        if (!rectangle || !label || !rectangle.getAttribute("d")) return;
+
+        const { width, height } = rectangle.getBBox();
+        const area = width * height;
+        const fontSize =
+          area >= 18_000
+            ? 12
+            : area >= 8_000
+              ? 10
+              : area >= 3_000
+                ? 8
+                : area >= 900
+                  ? 6
+                  : 4;
+
+        label.style.fontSize = `${fontSize}px`;
+      });
+    };
+
+    const frame = requestAnimationFrame(applyLabelSizes);
+    const observer = new MutationObserver(applyLabelSizes);
+    observer.observe(chart, { childList: true, subtree: true });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [compactLabels, date, metric]);
 
   const config: Partial<Config> = {
     responsive: true,
@@ -232,10 +272,10 @@ export function MarketTreemap({
       </div>
       <div
         ref={chartShell}
-        className="h-[72vh] min-h-[570px] max-h-[920px] bg-white p-2 sm:min-h-[650px] sm:p-3 [&:fullscreen]:h-screen [&:fullscreen]:max-h-none [&:fullscreen]:p-5"
+        className="h-[72vh] min-h-[650px] max-h-[920px] bg-white p-2 sm:min-h-[650px] sm:p-3 [&:fullscreen]:h-screen [&:fullscreen]:max-h-none [&:fullscreen]:p-5"
       >
         <Plot
-          key={`${date}-${metric}`}
+          key={`${date}-${metric}-${compactLabels ? "compact" : "regular"}`}
           data={[trace]}
           layout={layout}
           config={config}
