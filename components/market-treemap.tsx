@@ -202,6 +202,16 @@ export function MarketTreemap({
                   : 4;
 
         label.style.fontSize = `${fontSize}px`;
+
+        // Safari doesn't reliably re-resolve `em`-based tspan offsets
+        // against a font size set dynamically on the parent afterwards,
+        // so pin each line's size and spacing to explicit px values
+        // (1.3 matches Plotly's own line-spacing constant).
+        const lines = label.querySelectorAll<SVGTSpanElement>("tspan.line");
+        lines.forEach((line, index) => {
+          line.style.fontSize = `${fontSize}px`;
+          line.setAttribute("dy", index === 0 ? "0px" : `${fontSize * 1.3}px`);
+        });
       });
     };
 
