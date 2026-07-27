@@ -38,7 +38,7 @@ export function DailyReport({ markdown }: { markdown: string }) {
           li: ({ children }) => <li className="pl-1">{children}</li>,
           table: ({ children }) => (
             <div className="mx-4 mt-4 overflow-x-auto rounded-xl border border-slate-200 sm:mx-6">
-              <table className="w-full min-w-[720px] border-collapse text-left text-xs sm:text-sm">
+              <table className="w-full min-w-[560px] border-collapse text-left text-xs sm:min-w-[720px] sm:text-sm">
                 {children}
               </table>
             </div>
@@ -49,12 +49,12 @@ export function DailyReport({ markdown }: { markdown: string }) {
             </thead>
           ),
           th: ({ children }) => (
-            <th className="whitespace-nowrap border-b border-slate-200 px-3 py-3 font-bold">
+            <th className="whitespace-nowrap border-b border-slate-200 px-2.5 py-2.5 font-bold sm:px-3 sm:py-3">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="whitespace-nowrap border-b border-slate-100 px-3 py-2.5 text-slate-600 last:border-b-0">
+            <td className="break-words border-b border-slate-100 px-2.5 py-2 text-slate-600 last:border-b-0 sm:px-3 sm:py-2.5">
               {children}
             </td>
           ),

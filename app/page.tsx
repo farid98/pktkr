@@ -1,4 +1,4 @@
-import { ArrowDownToLine, Clock3 } from "lucide-react";
+import { Clock3 } from "lucide-react";
 import Link from "next/link";
 
 import { DailyReport } from "@/components/daily-report";
@@ -27,7 +27,6 @@ export default async function Home({
   const { date: requestedDate } = await searchParams;
   const { date, rows, index, reportMarkdown } =
     await getMarketSession(requestedDate);
-  const file = index.sessions.find((session) => session.date === date)?.file ?? "#";
   const updatedAt = rows[0]?.downloadedAtUtc;
 
   return (
@@ -42,29 +41,31 @@ export default async function Home({
               pktkr
             </span>
           </Link>
-          <nav className="flex items-center gap-5 text-sm font-medium text-slate-500">
-            <a href="#market-map" className="hidden hover:text-slate-900 sm:block">
-              Market map
+          <nav className="flex items-center gap-4 text-xs font-semibold text-slate-500 sm:gap-5 sm:text-sm">
+            <a href="#market-map" className="hover:text-slate-900">
+              <span className="sm:hidden">Map</span>
+              <span className="hidden sm:inline">Market map</span>
             </a>
             {reportMarkdown ? (
               <a href="#daily-report" className="hover:text-slate-900">
-                Daily report
+                <span className="sm:hidden">Summary</span>
+                <span className="hidden sm:inline">Daily report</span>
               </a>
             ) : null}
-            <a href="#methodology" className="hover:text-slate-900">
+            <a href="#methodology" className="hidden hover:text-slate-900 sm:inline">
               Methodology
             </a>
           </nav>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1880px] px-3 py-7 sm:px-8 sm:py-10">
+      <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section
           id="market-map"
-          className="mb-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"
+          className="mb-4 flex flex-col gap-3 lg:mb-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5"
         >
           <div>
-            <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#58749b]">
+            <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#58749b]">
               <span className="size-1.5 rounded-full bg-emerald-500" />
               Market close
             </div>
@@ -84,7 +85,7 @@ export default async function Home({
 
         <section
           id="methodology"
-          className="grid gap-4 py-6 text-sm text-slate-500 md:grid-cols-[1fr_auto]"
+          className="py-6 text-sm text-slate-500"
         >
           <div className="max-w-4xl leading-6">
             <p>
@@ -102,14 +103,6 @@ export default async function Home({
               </p>
             ) : null}
           </div>
-          <a
-            href={file}
-            download
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900"
-          >
-            <ArrowDownToLine size={15} />
-            Download this session’s CSV
-          </a>
         </section>
 
         {reportMarkdown ? <DailyReport markdown={reportMarkdown} /> : null}

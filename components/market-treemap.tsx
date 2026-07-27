@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Maximize2 } from "lucide-react";
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Config, Data, Layout } from "plotly.js";
 
@@ -146,6 +146,7 @@ export function MarketTreemap({
 }) {
   const [metric, setMetric] = useState<Metric>("marketCap");
   const [compactLabels, setCompactLabels] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const chartShell = useRef<HTMLDivElement>(null);
   const trace = useMemo(
     () => makeTrace(rows, metric, compactLabels),
@@ -262,21 +263,39 @@ export function MarketTreemap({
     scrollZoom: false,
   };
 
-  async function enterFullscreen() {
-    if (chartShell.current?.requestFullscreen) {
-      await chartShell.current.requestFullscreen();
-    }
-  }
+  useEffect(() => {
+    if (!expanded) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpanded(false);
+    };
+
+    document.addEventListener("keydown", closeOnEscape);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.body.style.overflow = "";
+    };
+  }, [expanded]);
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)]">
-      <div className="flex flex-col gap-4 border-b border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <section
+      className={`overflow-hidden border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)] ${
+        expanded
+          ? "fixed inset-0 z-50 rounded-none shadow-2xl sm:inset-4 sm:rounded-2xl"
+          : "rounded-2xl"
+      }`}
+    >
+      <div className="flex flex-col gap-3 border-b border-slate-100 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
         <div>
           <p className="text-sm font-semibold text-slate-900">
             KSE-100 by {metricLabels[metric]}
           </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Click a sector to zoom. Hover over a company for details.
+          <p className="mt-1 text-xs text-slate-500 sm:block">
+            <span className="sm:hidden">Tap a sector to zoom.</span>
+            <span className="hidden sm:inline">
+              Click a sector to zoom. Hover over a company for details.
+            </span>
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -302,17 +321,22 @@ export function MarketTreemap({
           </div>
           <button
             type="button"
-            onClick={enterFullscreen}
+            onClick={() => setExpanded((value) => !value)}
             className="grid size-10 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
-            aria-label="Open chart fullscreen"
+            aria-label={expanded ? "Close expanded chart" : "Open chart fullscreen"}
+            aria-pressed={expanded}
           >
-            <Maximize2 size={17} />
+            {expanded ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
           </button>
         </div>
       </div>
       <div
         ref={chartShell}
-        className="h-[72vh] min-h-[650px] max-h-[920px] bg-white p-2 sm:min-h-[650px] sm:p-3 [&:fullscreen]:h-screen [&:fullscreen]:max-h-none [&:fullscreen]:p-5"
+        className={`bg-white p-1.5 sm:p-3 ${
+          expanded
+            ? "h-[calc(100dvh-88px)] max-h-none sm:h-[calc(100dvh-96px)]"
+            : "h-[58vh] min-h-[420px] max-h-[700px] sm:h-[72vh] sm:min-h-[650px] sm:max-h-[920px]"
+        }`}
       >
         <Plot
           key={`${date}-${metric}-${compactLabels ? "compact" : "regular"}`}
