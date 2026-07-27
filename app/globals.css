@@ -27,3 +27,28 @@ select,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+.md-highlight {
+  border-radius: 0.25rem;
+  padding: 0.05em 0.2em;
+  color: inherit;
+}
+
+.md-highlight-yellow {
+  background: #fef08a;
+}
+
+.md-highlight-red {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.md-highlight-green {
+  background: #bbf7d0;
+  color: #166534;
+}
+
+.md-highlight-blue {
+  background: #bfdbfe;
+  color: #1e40af;
+}

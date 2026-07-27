@@ -1,14 +1,24 @@
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-export function DailyReport({ markdown }: { markdown: string }) {
+import { remarkHighlights } from "@/lib/remark-highlights";
+
+export function DailyReport({
+  markdown,
+  id = "daily-report",
+}: {
+  markdown: string;
+  id?: string;
+}) {
   return (
     <section
-      id="daily-report"
+      id={id}
       className="mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)]"
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkHighlights]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           h1: ({ children }) => (
             <h2 className="border-b border-slate-100 px-4 py-5 text-2xl font-bold tracking-[-0.03em] text-[#203a63] sm:px-6 sm:text-3xl">

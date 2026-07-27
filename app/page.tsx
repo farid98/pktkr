@@ -52,6 +52,9 @@ export default async function Home({
                 <span className="hidden sm:inline">Daily report</span>
               </a>
             ) : null}
+            <a href="/news" className="hover:text-slate-900">
+              News
+            </a>
             <a href="#methodology" className="hidden hover:text-slate-900 sm:inline">
               Methodology
             </a>
