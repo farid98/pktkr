@@ -45,6 +45,11 @@ function makeTrace(
   const text: string[] = [""];
   const customdata: (string | number)[][] = [["", "", "", 0, 0, 0, "root"]];
   const hovertemplate: string[] = ["<extra></extra>"];
+  // 0 means "no override" (falls back to the base textfont size below);
+  // sector headers get an explicit bump so they stay readable even when
+  // the leaf tiles' font is shrunk down for compact/mobile layouts.
+  const headerFontSize = compactLabels ? 9 : 15;
+  const insideFontSizes: number[] = [0];
 
   for (const sector of sectors) {
     const sectorRows = rows.filter((row) => row.sector === sector);
@@ -58,6 +63,7 @@ function makeTrace(
     text.push(sector);
     customdata.push([sector, "", sector, 0, 0, sectorValue, "sector"]);
     hovertemplate.push(`<b>${sector}</b><extra></extra>`);
+    insideFontSizes.push(headerFontSize);
 
     for (const row of sectorRows) {
       ids.push(`stock:${row.symbol}`);
@@ -88,6 +94,7 @@ function makeTrace(
           "Volume: %{customdata[6]:,.0f}<br>" +
           "Market cap: PKR %{customdata[5]:,.0f}<extra></extra>",
       );
+      insideFontSizes.push(0);
     }
   }
 
@@ -107,6 +114,14 @@ function makeTrace(
       colors,
       coloraxis: "coloraxis",
       line: { color: "#ffffff", width: 1 },
+      // Plotly's default header strip is `textfont.size * 2`, so in
+      // compact mode (textfont.size 4, for tiny leaf tiles) sector
+      // headers were only given ~8px of height to render in — not
+      // enough room for their own text, so Plotly's per-element
+      // constrained fit shrunk them down to a barely-visible scale.
+      // Give headers a fixed, readable strip independent of the leaf
+      // tiles' font size.
+      pad: { t: compactLabels ? 18 : 30, l: 4, r: 4, b: 2 },
     },
     root: { color: "#3f3f3f" },
     tiling: { packing: "squarify", pad: 1 },
@@ -116,6 +131,9 @@ function makeTrace(
       size: compactLabels ? 4 : 13,
       color: "#30343b",
     },
+    // Per-point override so sector headers render larger than the
+    // (possibly tiny) leaf-tile font; 0 entries fall back to `textfont`.
+    insidetextfont: { size: insideFontSizes },
   } as Data;
 }
 
@@ -161,7 +179,11 @@ export function MarketTreemap({
       font: { color: "#172033", size: 15 },
       align: "left",
     },
-    uniformtext: { minsize: compactLabels ? 4 : 10, mode: "hide" },
+    // No `mode: "hide"` here: that forces one shared font size across the
+    // whole trace and drops (display:none) any label that can't fit it —
+    // with sectors ranging from huge to tiny, that hid most sector
+    // headers entirely instead of just shrinking them.
+    uniformtext: { minsize: compactLabels ? 4 : 10 },
   } as Partial<Layout>;
 
   useEffect(() => {
@@ -188,6 +210,15 @@ export function MarketTreemap({
         const label = slice.querySelector<SVGTextElement>("text.slicetext");
         if (!rectangle || !label || !rectangle.getAttribute("d")) return;
 
+        // Sector headers render a single line and only get a thin strip
+        // (marker.pad.t, derived from the base font size) reserved for
+        // them at the top of the whole sector rectangle. Only leaf tiles
+        // have the two-line "SYMBOL / %change" label this sizing is for —
+        // resizing headers off the full sector area overflows that strip
+        // and gets painted over by the sector's own child tiles.
+        const lines = label.querySelectorAll<SVGTSpanElement>("tspan.line");
+        if (lines.length < 2) return;
+
         const { width, height } = rectangle.getBBox();
         const area = width * height;
         const fontSize =
@@ -207,7 +238,6 @@ export function MarketTreemap({
         // against a font size set dynamically on the parent afterwards,
         // so pin each line's size and spacing to explicit px values
         // (1.3 matches Plotly's own line-spacing constant).
-        const lines = label.querySelectorAll<SVGTSpanElement>("tspan.line");
         lines.forEach((line, index) => {
           line.style.fontSize = `${fontSize}px`;
           line.setAttribute("dy", index === 0 ? "0px" : `${fontSize * 1.3}px`);
