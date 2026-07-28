@@ -1,5 +1,5 @@
 {
-  "latest": "2026-07-27",
+  "latest": "2026-07-28",
   "sessions": [
     {
       "date": "2026-07-21",
@@ -25,6 +25,11 @@
       "date": "2026-07-27",
       "file": "/data/daily/kse100_2026-07-27.csv",
       "report": "/data/reports/kse100_2026-07-27_summary.md"
+    },
+    {
+      "date": "2026-07-28",
+      "file": "/data/daily/kse100_2026-07-28.csv",
+      "report": "/data/reports/kse100_2026-07-28_summary.md"
     }
   ]
 }
