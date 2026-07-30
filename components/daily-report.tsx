@@ -20,9 +20,9 @@ export function DailyReport({
         remarkPlugins={[remarkGfm, remarkHighlights]}
         rehypePlugins={[rehypeRaw]}
         components={{
-          h1: ({ children }) => (
+          h1: () => (
             <h2 className="border-b border-slate-100 px-4 py-5 text-2xl font-bold tracking-[-0.03em] text-[#203a63] sm:px-6 sm:text-3xl">
-              {children}
+              Market close report
             </h2>
           ),
           h2: ({ children }) => (

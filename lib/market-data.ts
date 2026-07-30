@@ -1,10 +1,21 @@
 import { parse } from "csv-parse/sync";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { MarketIndex, MarketRow } from "@/lib/market-types";
 
 const DATA_ROOT = path.join(process.cwd(), "public", "data");
+
+export async function getMarketCloseChart(date: string): Promise<string | null> {
+  const filename = `kse100_${date}_market_close.png`;
+  try {
+    await access(path.join(DATA_ROOT, "charts", filename));
+    return `/data/charts/${filename}`;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    return null;
+  }
+}
 
 export async function getMarketIndex(): Promise<MarketIndex> {
   const contents = await readFile(path.join(DATA_ROOT, "index.json"), "utf8");

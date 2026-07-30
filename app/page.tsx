@@ -1,10 +1,11 @@
 import { Clock3 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { DailyReport } from "@/components/daily-report";
 import { DateSelector } from "@/components/date-selector";
 import { MarketTreemap } from "@/components/market-treemap";
-import { getMarketSession } from "@/lib/market-data";
+import { getMarketCloseChart, getMarketSession } from "@/lib/market-data";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function Home({
   const { date: requestedDate } = await searchParams;
   const { date, rows, index, reportMarkdown } =
     await getMarketSession(requestedDate);
+  const marketCloseChart = await getMarketCloseChart(date);
   const updatedAt = rows[0]?.downloadedAtUtc;
 
   return (
@@ -68,12 +70,8 @@ export default async function Home({
           className="mb-4 flex flex-col gap-3 lg:mb-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5"
         >
           <div>
-            <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#58749b]">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              Market close
-            </div>
             <h1 className="text-3xl font-bold tracking-[-0.04em] text-[#203a63] sm:text-4xl">
-              KSE-100 Market Map
+              KSE-100 Market Close
             </h1>
           </div>
           <div className="flex flex-wrap items-center">
@@ -83,6 +81,22 @@ export default async function Home({
             />
           </div>
         </section>
+
+        {marketCloseChart ? (
+          <section
+            aria-label={`KSE-100 market close chart for ${date}`}
+            className="mb-4 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm lg:mx-auto lg:mb-6 lg:w-2/3"
+          >
+            <Image
+              src={marketCloseChart}
+              alt={`KSE-100 market close chart for ${date}`}
+              width={3600}
+              height={2250}
+              sizes="100vw"
+              className="block h-auto w-full"
+            />
+          </section>
+        ) : null}
 
         <MarketTreemap rows={rows} date={date} />
 

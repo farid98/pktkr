@@ -289,7 +289,7 @@ export function MarketTreemap({
       <div className="flex flex-col gap-3 border-b border-slate-100 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
         <div>
           <p className="text-sm font-semibold text-slate-900">
-            KSE-100 by {metricLabels[metric]}
+            Market close Heat Map
           </p>
           <p className="mt-1 text-xs text-slate-500 sm:block">
             <span className="sm:hidden">Tap a sector to zoom.</span>
