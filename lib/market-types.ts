@@ -2,6 +2,9 @@ export type MarketRow = {
   symbol: string;
   company: string;
   sector: string;
+  ldcp: number;
+  high: number;
+  low: number;
   close: number;
   percentChange: number;
   volume: number;

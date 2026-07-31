@@ -2,8 +2,8 @@ import { Clock3 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { DailyReport } from "@/components/daily-report";
 import { DateSelector } from "@/components/date-selector";
+import { MarketCloseReport } from "@/components/market-close-report";
 import { MarketTreemap } from "@/components/market-treemap";
 import { getMarketCloseChart, getMarketSession } from "@/lib/market-data";
 
@@ -26,8 +26,7 @@ export default async function Home({
   searchParams: Promise<{ date?: string }>;
 }) {
   const { date: requestedDate } = await searchParams;
-  const { date, rows, index, reportMarkdown } =
-    await getMarketSession(requestedDate);
+  const { date, rows, index } = await getMarketSession(requestedDate);
   const marketCloseChart = await getMarketCloseChart(date);
   const updatedAt = rows[0]?.downloadedAtUtc;
 
@@ -48,12 +47,10 @@ export default async function Home({
               <span className="sm:hidden">Map</span>
               <span className="hidden sm:inline">Market map</span>
             </a>
-            {reportMarkdown ? (
-              <a href="#daily-report" className="hover:text-slate-900">
-                <span className="sm:hidden">Summary</span>
-                <span className="hidden sm:inline">Daily report</span>
-              </a>
-            ) : null}
+            <a href="#daily-report" className="hover:text-slate-900">
+              <span className="sm:hidden">Summary</span>
+              <span className="hidden sm:inline">Daily report</span>
+            </a>
             <a href="/news" className="hover:text-slate-900">
               News
             </a>
@@ -122,7 +119,7 @@ export default async function Home({
           </div>
         </section>
 
-        {reportMarkdown ? <DailyReport markdown={reportMarkdown} /> : null}
+        <MarketCloseReport rows={rows} />
       </main>
     </div>
   );
