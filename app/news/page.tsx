@@ -29,6 +29,9 @@ export default async function NewsPage() {
               <span className="sm:hidden">Summary</span>
               <span className="hidden sm:inline">Daily report</span>
             </Link>
+            <Link href="/explore" className="hover:text-slate-900">
+              Explore
+            </Link>
             <span className="text-[#203a63]" aria-current="page">
               News
             </span>

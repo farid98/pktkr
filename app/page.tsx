@@ -54,9 +54,9 @@ export default async function Home({
             <a href="/news" className="hover:text-slate-900">
               News
             </a>
-            <a href="#methodology" className="hidden hover:text-slate-900 sm:inline">
-              Methodology
-            </a>
+            <Link href="/explore" className="hover:text-slate-900">
+              Explore
+            </Link>
           </nav>
         </div>
       </header>
