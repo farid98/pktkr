@@ -1,8 +1,8 @@
 {
-  "date": "2026-08-13",
-  "file": "/data/daily/kse100_2026-08-13.csv",
-  "report": "/data/reports/kse100_2026-08-13_summary.md",
-  "marketCloseChart": "/data/charts/kse100_2026-08-13_market_close.png",
+  "date": "2026-08-17",
+  "file": "/data/daily/kse100_2026-08-17.csv",
+  "report": "/data/reports/kse100_2026-08-17_summary.md",
+  "marketCloseChart": "/data/charts/kse100_2026-08-17_market_close.png",
   "rowCount": 100,
-  "generatedAt": "2026-08-13T11:00:39+00:00"
+  "generatedAt": "2026-08-17T11:00:30+00:00"
 }
