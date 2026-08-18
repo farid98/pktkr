@@ -1,5 +1,5 @@
 {
-  "latest": "2026-08-17",
+  "latest": "2026-08-18",
   "sessions": [
     {
       "date": "2026-07-21",
@@ -108,6 +108,12 @@
       "file": "/data/daily/kse100_2026-08-17.csv",
       "report": "/data/reports/kse100_2026-08-17_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-17_market_close.png"
+    },
+    {
+      "date": "2026-08-18",
+      "file": "/data/daily/kse100_2026-08-18.csv",
+      "report": "/data/reports/kse100_2026-08-18_summary.md",
+      "marketCloseChart": "/data/charts/kse100_2026-08-18_market_close.png"
     }
   ]
 }
