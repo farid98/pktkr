@@ -6,6 +6,14 @@ import { MarketCloseReport } from "@/components/market-close-report";
 import { MarketTreemap } from "@/components/market-treemap";
 import { SiteHeader } from "@/components/site-header";
 import { getMarketCloseChart, getMarketSession } from "@/lib/market-data";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "KSE-100 Market Close",
+  description:
+    "Explore the KSE-100 market close by sector, market capitalisation, trading volume, and daily performance.",
+  path: "/",
+});
 
 export const dynamic = "force-dynamic";
 

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 
 import { FirebaseAnalytics } from "@/components/firebase-analytics";
+import { defaultDescription, siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +17,47 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "pktkr — KSE-100 Market Map",
-  description:
-    "An interactive view of KSE-100 shares, grouped by sector and sized by market cap or trade volume.",
+  metadataBase: siteUrl,
+  title: {
+    default: "pktkr — Pakistan market and economy data",
+    template: `%s | ${siteName}`,
+  },
+  description: defaultDescription,
+  applicationName: siteName,
+  authors: [{ name: siteName }],
+  creator: siteName,
+  publisher: siteName,
+  keywords: [
+    "Pakistan stock market",
+    "KSE-100",
+    "Pakistan economy",
+    "Pakistan exports",
+    "Pakistan imports",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "pktkr — Pakistan market and economy data",
+    description: defaultDescription,
+    url: "/",
+    siteName,
+    locale: "en_PK",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "pktkr — Pakistan market and economy data",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "pktkr — Pakistan market and economy data",
+    description: defaultDescription,
+    images: ["/opengraph-image"],
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

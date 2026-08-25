@@ -3,21 +3,13 @@
 import dynamic from "next/dynamic";
 import type { Config, Data, Layout } from "plotly.js";
 
-import type { ItExportPoint } from "@/lib/econ-data";
+import type { ItExportComparison, ItExportPoint } from "@/lib/economy/it-export-data";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, loading: () => <div className="h-[420px] animate-pulse bg-slate-50" /> });
 
-const comparison = [
-  { category: "Knitwear", value: 5024.8 },
-  { category: "Rice", value: 3359.1 },
-  { category: "IT · computer services", value: 3237.2 },
-  { category: "Bed-wear", value: 3121.7 },
-  { category: "Cotton fabrics", value: 1813.4 },
-];
-
 const chartConfig: Partial<Config> = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] };
 
-export function ItExportAnalysis({ data }: { data: ItExportPoint[] }) {
+export function ItExportAnalysis({ data, comparison }: { data: ItExportPoint[]; comparison: ItExportComparison[] }) {
   const annual = data.filter((row) => row.period.startsWith("FY") && !row.period.includes("YTD"));
   const ytd = data.filter((row) => row.period.includes("YTD"));
   const latestAnnual = annual.at(-1)!;
@@ -44,10 +36,10 @@ export function ItExportAnalysis({ data }: { data: ItExportPoint[] }) {
   const comparisonData: Data[] = [{
     type: "bar",
     orientation: "h",
-    x: comparison.map((row) => row.value),
+    x: comparison.map((row) => row.valueMillionUsd),
     y: comparison.map((row) => row.category),
     marker: { color: comparison.map((row) => row.category.startsWith("IT") ? "#0f766e" : "#cbd5e1") },
-    text: comparison.map((row) => `$${row.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}M`),
+    text: comparison.map((row) => `$${row.valueMillionUsd.toLocaleString(undefined, { maximumFractionDigits: 0 })}M`),
     textposition: "outside",
     cliponaxis: false,
     hovertemplate: "%{y}<br>$%{x:,.0f}M<extra></extra>",

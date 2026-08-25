@@ -11,6 +11,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## SEO and sharing
+
+Set `NEXT_PUBLIC_SITE_URL=https://pktkr.com` in deployment settings. It is used for
+canonical URLs, the sitemap, robots.txt, and social sharing metadata. The app also
+generates a branded 1200×630 Open Graph image at `/opengraph-image`.
+
 ## Data layout
 
 ```text

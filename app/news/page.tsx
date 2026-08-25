@@ -1,6 +1,14 @@
 import { DailyReport } from "@/components/daily-report";
 import { getLatestNews } from "@/lib/market-data";
 import { SiteHeader } from "@/components/site-header";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "PSX News Briefing",
+  description:
+    "The latest Pakistan stock market, company, macroeconomic, and regulatory developments.",
+  path: "/news",
+});
 
 export const dynamic = "force-dynamic";
 

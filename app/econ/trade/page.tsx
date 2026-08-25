@@ -1,11 +1,19 @@
 import Link from "next/link";
 
-import { EconCategoryChart } from "@/components/econ-category-chart";
-import { EconTradeChart } from "@/components/econ-trade-chart";
+import { EconCategoryChart } from "@/components/economy/category-chart";
+import { EconTradeChart } from "@/components/economy/trade-chart";
 import { SiteHeader } from "@/components/site-header";
-import { getEconomicTradeCategories, getEconomicTradeData } from "@/lib/econ-data";
+import { getEconomicTradeCategories, getEconomicTradeData } from "@/lib/economy/trade-data";
+import { createPageMetadata } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+export const metadata = createPageMetadata({
+  title: "Pakistan Exports and Imports",
+  description:
+    "Track Pakistan’s annual merchandise exports, imports, trade deficit, and major trade categories in U.S. dollars.",
+  path: "/econ/trade",
+});
+
+export const revalidate = 3600;
 
 export default async function EconPage() {
   const data = await getEconomicTradeData();

@@ -1,6 +1,14 @@
 import { StockExplorer } from "@/components/stock-explorer";
 import { SiteHeader } from "@/components/site-header";
 import { getMarketSession } from "@/lib/market-data";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Explore the KSE-100",
+  description:
+    "Browse Pakistan’s KSE-100 constituents by company, sector, and market capitalisation.",
+  path: "/explore",
+});
 
 export const dynamic = "force-dynamic";
 

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import type { Config, Data, Layout } from "plotly.js";
 
-import type { TradeCategory } from "@/lib/econ-data";
+import type { TradeCategory } from "@/lib/economy/trade-data";
 
 const Plot = dynamic(() => import("react-plotly.js"), {
   ssr: false,
