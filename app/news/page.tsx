@@ -1,7 +1,6 @@
-import Link from "next/link";
-
 import { DailyReport } from "@/components/daily-report";
 import { getLatestNews } from "@/lib/market-data";
+import { SiteHeader } from "@/components/site-header";
 
 export const dynamic = "force-dynamic";
 
@@ -10,34 +9,7 @@ export default async function NewsPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <header className="border-b border-slate-200/80 bg-white">
-        <div className="mx-auto flex h-16 max-w-[1880px] items-center justify-between px-4 sm:px-8">
-          <Link href="/" className="flex items-center gap-3" aria-label="pktkr home">
-            <span className="grid size-9 place-items-center rounded-xl bg-[#203a63] text-sm font-black tracking-tight text-white">
-              pk
-            </span>
-            <span className="text-lg font-bold tracking-[-0.03em] text-[#203a63]">
-              pktkr
-            </span>
-          </Link>
-          <nav className="flex items-center gap-4 text-xs font-semibold text-slate-500 sm:gap-5 sm:text-sm">
-            <Link href="/#market-map" className="hover:text-slate-900">
-              <span className="sm:hidden">Map</span>
-              <span className="hidden sm:inline">Market map</span>
-            </Link>
-            <Link href="/#daily-report" className="hover:text-slate-900">
-              <span className="sm:hidden">Summary</span>
-              <span className="hidden sm:inline">Daily report</span>
-            </Link>
-            <Link href="/explore" className="hover:text-slate-900">
-              Explore
-            </Link>
-            <span className="text-[#203a63]" aria-current="page">
-              News
-            </span>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader section="market" active="news" />
 
       <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section className="mb-4 sm:mb-6">

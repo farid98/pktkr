@@ -1,0 +1,36 @@
+{
+  "publisher": "State Bank of Pakistan",
+  "source_pages": {
+    "exports": "https://www.sbp.org.pk/our-operations/publications/export-of-goods-and-services-monthly/413/export-of-goods-and-services-formerly-export-receipts-jun-2025",
+    "imports": "https://www.sbp.org.pk/our-operations/publications/import-of-goods-and-services-monthly/414/imports-of-goods-and-services-june-2025",
+    "easydata": "https://easydata.sbp.org.pk/apex/f?p=10:1:0:"
+  },
+  "retrieved_at_utc": "2026-08-25T07:49:55.433870+00:00",
+  "units": "million USD",
+  "basis": "SBP monthly export receipts/import payments through scheduled banks; category values aggregated from HS4 workbook rows; services excluded",
+  "supplements": {
+    "2025-26": "May and June 2026 added from SBP EasyData Total as per BOP figures; the base workbook covers July 2025-April 2026"
+  },
+  "coverage": {
+    "annual": [
+      "2008-09",
+      "2025-26"
+    ],
+    "categories": [
+      "2008-09",
+      "2025-26"
+    ]
+  },
+  "archive_files": {
+    "exports_2008_2013": "data/raw/sbp/exports_2008_2013.xlsx",
+    "exports_2014_2019": "data/raw/sbp/exports_2014_2019.xlsx",
+    "exports_2020_2026": "data/raw/sbp/exports_2020_2026.xlsx",
+    "imports_2008_2013": "data/raw/sbp/imports_2008_2013.xlsx",
+    "imports_2014_2019": "data/raw/sbp/imports_2014_2019.xlsx",
+    "imports_2020_2026": "data/raw/sbp/imports_2020_2026.xlsx"
+  },
+  "rows": {
+    "annual": 18,
+    "categories": 3721
+  }
+}

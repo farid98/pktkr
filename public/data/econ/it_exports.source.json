@@ -1,0 +1,14 @@
+{
+  "publisher": "State Bank of Pakistan",
+  "definition": "Computer services exports: hardware consultancy, software consultancy, maintenance and repairs, computer software, freelance computer and information services, and other computer services. ICT exports additionally include telecommunications and information services.",
+  "annual_source": "https://www.sbp.org.pk/reports/annual/aarFY24/Chapter-06.pdf",
+  "fy2025_source": "https://www.sbp.org.pk/publications/export/2025/Jun/2.pdf",
+  "ytd_source": "https://www.sbp.org.pk/ecodata/dt.pdf",
+  "units": "million USD",
+  "retrieved_at": "2026-08-25",
+  "caveats": [
+    "IT services are exports of services and should not be directly treated as merchandise exports.",
+    "FY2026 is represented by the Jul-Apr provisional comparison, not a completed fiscal year.",
+    "FY2020-FY2024 annual computer-services values are rounded to the nearest million in the SBP annual report."
+  ]
+}

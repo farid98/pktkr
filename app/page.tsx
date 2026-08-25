@@ -1,10 +1,10 @@
 import { Clock3 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 
 import { DateSelector } from "@/components/date-selector";
 import { MarketCloseReport } from "@/components/market-close-report";
 import { MarketTreemap } from "@/components/market-treemap";
+import { SiteHeader } from "@/components/site-header";
 import { getMarketCloseChart, getMarketSession } from "@/lib/market-data";
 
 export const dynamic = "force-dynamic";
@@ -32,34 +32,7 @@ export default async function Home({
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <header className="border-b border-slate-200/80 bg-white">
-        <div className="mx-auto flex h-16 max-w-[1880px] items-center justify-between px-4 sm:px-8">
-          <Link href="/" className="flex items-center gap-3" aria-label="pktkr home">
-            <span className="grid size-9 place-items-center rounded-xl bg-[#203a63] text-sm font-black tracking-tight text-white">
-              pk
-            </span>
-            <span className="text-lg font-bold tracking-[-0.03em] text-[#203a63]">
-              pktkr
-            </span>
-          </Link>
-          <nav className="flex items-center gap-4 text-xs font-semibold text-slate-500 sm:gap-5 sm:text-sm">
-            <a href="#market-map" className="hover:text-slate-900">
-              <span className="sm:hidden">Map</span>
-              <span className="hidden sm:inline">Market map</span>
-            </a>
-            <a href="#daily-report" className="hover:text-slate-900">
-              <span className="sm:hidden">Summary</span>
-              <span className="hidden sm:inline">Daily report</span>
-            </a>
-            <a href="/news" className="hover:text-slate-900">
-              News
-            </a>
-            <Link href="/explore" className="hover:text-slate-900">
-              Explore
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader section="market" active="market" />
 
       <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section

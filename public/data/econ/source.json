@@ -1,0 +1,16 @@
+{
+  "source_page": "https://www.pbs.gov.pk/external-trade-statistics/",
+  "source_pdf": "https://www.pbs.gov.pk/wp-content/uploads/2020/07/14.08-13.pdf",
+  "retrieved_at_utc": "2026-08-25T06:17:00+00:00",
+  "units": "million USD",
+  "coverage": "1985-86 to 2024-25",
+  "publisher": "Pakistan Bureau of Statistics",
+  "category_sources": {
+    "exports": "https://www.pbs.gov.pk/wp-content/uploads/2020/07/14.02-13.pdf",
+    "imports": "https://www.pbs.gov.pk/wp-content/uploads/2020/07/14.03-13.pdf"
+  },
+  "category_coverage": "2010-11 to 2024-25",
+  "category_units": "million USD (converted from million PKR)",
+  "category_historical_source": "https://www.pbs.gov.pk/wp-content/uploads/2020/07/Pakistan_Statistical_Year_Book_2022.pdf",
+  "exchange_rate_source": "https://www.finance.gov.pk/survey/chapter_25/8_Trade_and_Payments.pdf"
+}
