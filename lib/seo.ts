@@ -19,11 +19,15 @@ export function createPageMetadata({
   title,
   description,
   path,
+  imagePath = "/opengraph-image",
 }: {
   title: string;
   description: string;
   path: string;
+  imagePath?: string;
 }): Metadata {
+  const image = { ...socialImage, url: imagePath };
+
   return {
     title,
     description,
@@ -35,13 +39,13 @@ export function createPageMetadata({
       siteName,
       locale: "en_PK",
       type: "website",
-      images: [socialImage],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [socialImage.url],
+      images: [imagePath],
     },
   };
 }

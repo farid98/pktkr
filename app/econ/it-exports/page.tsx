@@ -8,6 +8,7 @@ export const metadata = createPageMetadata({
   description:
     "See how Pakistan’s computer-services exports have grown and compare them with major merchandise export categories.",
   path: "/econ/it-exports",
+  imagePath: "/econ/it-exports/opengraph-image",
 });
 
 export const revalidate = 3600;
