@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 
 import type { MarketRow, TickerHistory } from "@/lib/market-types";
 
@@ -71,21 +71,21 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
             const changeColor = row.percentChange > 0 ? "text-emerald-700" : row.percentChange < 0 ? "text-rose-700" : "text-slate-500";
             const tickerHistory = history[row.symbol] ?? [];
             const trendPositive = tickerHistory.length >= 2 ? tickerHistory[tickerHistory.length - 1] >= tickerHistory[0] : row.percentChange >= 0;
-            return <>
-              <tr key={row.symbol} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70">
+            return <Fragment key={row.symbol}>
+              <tr className="cursor-pointer border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#58749b]" tabIndex={0} role="button" aria-expanded={isExpanded} onClick={() => setExpandedSymbol(isExpanded ? null : row.symbol)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setExpandedSymbol(isExpanded ? null : row.symbol); } }}>
                 <td className="px-4 py-3 sm:px-6">
                   <div className="flex items-center justify-between gap-3">
-                    <a href={`https://dps.psx.com.pk/company/${encodeURIComponent(row.symbol)}`} target="_blank" rel="noreferrer" className="font-bold text-[#203a63] underline decoration-slate-200 underline-offset-2 hover:text-[#315a8a]">{row.symbol}</a>
+                    <a href={`https://dps.psx.com.pk/company/${encodeURIComponent(row.symbol)}`} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()} className="font-bold text-[#203a63] underline decoration-slate-200 underline-offset-2 hover:text-[#315a8a]">{row.symbol}</a>
                   </div>
                   <span className="hidden max-w-[300px] truncate text-xs text-slate-500 md:block">{row.company}</span>
-                  <button type="button" className="mt-1 flex w-full items-center gap-3 text-left text-xs md:hidden" aria-expanded={isExpanded} onClick={() => setExpandedSymbol(isExpanded ? null : row.symbol)}><span className="font-medium tabular-nums text-slate-700">PKR {row.close.toFixed(2)}</span><span className={`font-semibold tabular-nums ${changeColor}`}>{signedPercent(row.percentChange)}</span><span className="ml-auto text-[10px] font-semibold uppercase tracking-wide text-slate-400">{isExpanded ? "Hide" : "View"}</span></button>
+                  <span className="mt-1 flex items-center gap-3 text-xs md:hidden"><span className="font-medium tabular-nums text-slate-700">PKR {row.close.toFixed(2)}</span><span className={`font-semibold tabular-nums ${changeColor}`}>{signedPercent(row.percentChange)}</span></span>
                 </td>
                 <td className="hidden px-3 py-3 text-right font-medium tabular-nums text-slate-700 md:table-cell">PKR {row.close.toFixed(2)}</td>
                 <td className={`hidden px-3 py-3 text-right font-semibold tabular-nums md:table-cell ${changeColor}`}>{signedPercent(row.percentChange)}</td>
-                <td className="hidden px-4 py-3 md:table-cell sm:px-6"><div className="flex justify-end"><Sparkline values={tickerHistory} positive={trendPositive} /></div></td>
+                <td className="px-2 py-3 sm:px-6 md:table-cell"><div className="flex justify-end"><Sparkline values={tickerHistory} positive={trendPositive} /></div></td>
               </tr>
-              {isExpanded && <tr key={`${row.symbol}-details`} className="border-b border-slate-100 bg-slate-50/60 md:hidden"><td colSpan={4} className="px-4 pb-4 pt-1"><div className="flex items-center justify-between gap-4"><span className="text-xs text-slate-500">{row.company}</span><Sparkline values={tickerHistory} positive={trendPositive} /></div></td></tr>}
-            </>;
+              {isExpanded && <tr className="border-b border-slate-100 bg-slate-50/60 md:hidden"><td colSpan={4} className="px-4 pb-4 pt-1"><div className="flex items-center justify-between gap-4"><span className="text-xs text-slate-500">{row.company}</span><span className="shrink-0 text-xs tabular-nums text-slate-500">Volume {new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(row.volume)}</span></div></td></tr>}
+            </Fragment>;
           })}</tbody>
         </table>
       </div>
