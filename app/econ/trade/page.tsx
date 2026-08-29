@@ -11,6 +11,7 @@ export const metadata = createPageMetadata({
   description:
     "Track Pakistan’s annual merchandise exports, imports, trade deficit, and major trade categories in U.S. dollars.",
   path: "/econ/trade",
+  imagePath: "/econ/trade/opengraph-image",
 });
 
 export const revalidate = 3600;

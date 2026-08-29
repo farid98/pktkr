@@ -2,9 +2,15 @@ import { parse } from "csv-parse/sync";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-import type { MarketIndex, MarketRow } from "@/lib/market-types";
+import type { MarketIndex, MarketRow, TickerHistory } from "@/lib/market-types";
 
 const DATA_ROOT = path.join(process.cwd(), "public", "data");
+
+export type MarketSessionData = {
+  date: string;
+  rows: MarketRow[];
+  index: MarketIndex;
+};
 
 export async function getMarketCloseChart(date: string): Promise<string | null> {
   const filename = `kse100_${date}_market_close.png`;
@@ -34,18 +40,14 @@ export async function getLatestNews(): Promise<string | null> {
   }
 }
 
-export async function getMarketSession(requestedDate?: string): Promise<{
-  date: string;
-  rows: MarketRow[];
-  index: MarketIndex;
-}> {
-  const index = await getMarketIndex();
-  const session =
-    index.sessions.find(({ date }) => date === requestedDate) ??
-    index.sessions.find(({ date }) => date === index.latest);
+async function loadMarketSession(
+  index: MarketIndex,
+  date: string,
+): Promise<MarketSessionData> {
+  const session = index.sessions.find((candidate) => candidate.date === date);
 
   if (!session) {
-    throw new Error("No market sessions are available");
+    throw new Error(`No market session is available for ${date}`);
   }
 
   const relativeFile = session.file.replace(/^\/data\//, "");
@@ -75,4 +77,54 @@ export async function getMarketSession(requestedDate?: string): Promise<{
   }
 
   return { date: session.date, rows, index };
+}
+
+export async function getMarketSession(requestedDate?: string): Promise<MarketSessionData> {
+  const index = await getMarketIndex();
+  const date = index.sessions.some(({ date }) => date === requestedDate)
+    ? requestedDate
+    : index.latest;
+
+  if (!date) {
+    throw new Error("No market sessions are available");
+  }
+
+  return loadMarketSession(index, date);
+}
+
+export async function getMarketSessionForDate(
+  date: string,
+): Promise<MarketSessionData | null> {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+
+  const index = await getMarketIndex();
+  if (!index.sessions.some((session) => session.date === date)) return null;
+  return loadMarketSession(index, date);
+}
+
+export async function getMarketTickerHistory(
+  index?: MarketIndex,
+): Promise<TickerHistory> {
+  const marketIndex = index ?? await getMarketIndex();
+  const sessions = marketIndex.sessions.slice(-30);
+  const histories: TickerHistory = {};
+
+  for (const session of sessions) {
+    const relativeFile = session.file.replace(/^\/data\//, "");
+    const csv = await readFile(path.join(DATA_ROOT, relativeFile), "utf8");
+    const records = parse(csv, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+    }) as Record<string, string>[];
+
+    for (const record of records) {
+      const close = Number(record.close);
+      if (!Number.isFinite(close)) continue;
+      histories[record.symbol] ??= [];
+      histories[record.symbol].push(close);
+    }
+  }
+
+  return histories;
 }

@@ -1,13 +1,12 @@
 import Link from "next/link";
 
 type Section = "market" | "economy";
-type ActivePage = "market" | "news" | "explore" | "economy" | "trade" | "it-exports";
+type ActivePage = "market" | "tickers" | "news" | "explore" | "economy" | "trade" | "it-exports";
 type NavLink = { href: string; label: string; shortLabel?: string; active: ActivePage };
 
 const marketLinks: NavLink[] = [
-  { href: "/#market-map", label: "Market map", shortLabel: "Map", active: "market" },
-  { href: "/#daily-report", label: "Daily report", shortLabel: "Summary", active: "market" },
-  { href: "/explore", label: "Explore", shortLabel: "Explore", active: "explore" },
+  { href: "/", label: "Market", shortLabel: "Market", active: "market" },
+  { href: "/tickers", label: "Tickers", shortLabel: "Tickers", active: "tickers" },
 ];
 
 const economyLinks: NavLink[] = [
@@ -16,7 +15,7 @@ const economyLinks: NavLink[] = [
   { href: "/econ/it-exports", label: "IT exports", active: "it-exports" },
 ];
 
-export function SiteHeader({ section, active }: { section: Section; active: ActivePage }) {
+export function SiteHeader({ section, active, showSubnav = true }: { section: Section; active: ActivePage; showSubnav?: boolean }) {
   const links = section === "market" ? marketLinks : economyLinks;
 
   return (
@@ -31,7 +30,7 @@ export function SiteHeader({ section, active }: { section: Section; active: Acti
           <Link href="/econ" className={section === "economy" ? "text-[#203a63]" : "text-slate-400 hover:text-slate-900"} aria-current={section === "economy" ? "page" : undefined}>Economy</Link>
         </nav>
       </div>
-      <div className="border-t border-slate-100">
+      {showSubnav ? <div className="border-t border-slate-100">
         <nav className="mx-auto flex max-w-[1880px] items-center gap-4 overflow-x-auto px-4 py-2 text-xs font-semibold text-slate-500 sm:gap-5 sm:px-8" aria-label={`${section === "market" ? "Stock market" : "Economy"} navigation`}>
           {links.map((link) => (
             <Link key={link.href} href={link.href} className={active === link.active ? "whitespace-nowrap text-[#203a63]" : "whitespace-nowrap hover:text-slate-900"} aria-current={active === link.active ? "page" : undefined}>
@@ -40,7 +39,7 @@ export function SiteHeader({ section, active }: { section: Section; active: Acti
             </Link>
           ))}
         </nav>
-      </div>
+      </div> : null}
     </header>
   );
 }

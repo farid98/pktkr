@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Maximize2, Minimize2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Config, Data, Layout } from "plotly.js";
 
@@ -125,7 +124,11 @@ function makeTrace(
     },
     root: { color: "#3f3f3f" },
     tiling: { packing: "squarify", pad: 1 },
-    pathbar: { visible: true, thickness: 26 },
+    pathbar: {
+      visible: true,
+      thickness: 26,
+      textfont: { color: "#e2e8f0" },
+    },
     textfont: {
       family: "Arial, sans-serif",
       size: compactLabels ? 4 : 13,
@@ -146,7 +149,6 @@ export function MarketTreemap({
 }) {
   const [metric, setMetric] = useState<Metric>("marketCap");
   const [compactLabels, setCompactLabels] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const chartShell = useRef<HTMLDivElement>(null);
   const trace = useMemo(
     () => makeTrace(rows, metric, compactLabels),
@@ -159,9 +161,9 @@ export function MarketTreemap({
 
   const layout = {
     autosize: true,
-    paper_bgcolor: "#ffffff",
-    plot_bgcolor: "#ffffff",
-    font: { family: "Arial, sans-serif", color: "#2c4265", size: 13 },
+    paper_bgcolor: "#0f172a",
+    plot_bgcolor: "#0f172a",
+    font: { family: "Arial, sans-serif", color: "#e2e8f0", size: 13 },
     margin: { t: 8, l: 0, r: 0, b: 0 },
     coloraxis: {
       showscale: false,
@@ -263,80 +265,44 @@ export function MarketTreemap({
     scrollZoom: false,
   };
 
-  useEffect(() => {
-    if (!expanded) return;
-
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setExpanded(false);
-    };
-
-    document.addEventListener("keydown", closeOnEscape);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", closeOnEscape);
-      document.body.style.overflow = "";
-    };
-  }, [expanded]);
-
   return (
-    <section
-      className={`overflow-hidden border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)] ${
-        expanded
-          ? "fixed inset-0 z-50 rounded-none shadow-2xl sm:inset-4 sm:rounded-2xl"
-          : "rounded-2xl"
-      }`}
-    >
-      <div className="flex flex-col gap-3 border-b border-slate-100 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_18px_70px_-42px_rgba(15,23,42,0.55)] ring-1 ring-inset ring-white">
+      <div className="h-1 bg-[#203a63]" aria-hidden="true" />
+      <div className="flex flex-col gap-3 bg-[#0f172a] px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
         <div>
-          <p className="text-sm font-semibold text-slate-900">
-            Market close Heat Map
-          </p>
-          <p className="mt-1 text-xs text-slate-500 sm:block">
-            <span className="sm:hidden">Tap a sector to zoom.</span>
-            <span className="hidden sm:inline">
-              Click a sector to zoom. Hover over a company for details.
-            </span>
-          </p>
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-[#34d399] shadow-[0_0_0_4px_rgba(52,211,153,0.12)]" aria-hidden="true" />
+            <p className="text-sm font-semibold tracking-[-0.01em] text-white sm:text-base">
+              Market close heat map
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <div
-            className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1"
+            className="inline-flex rounded-lg border border-white/10 bg-white/10 p-1"
             aria-label="Rectangle size"
           >
             {(Object.keys(metricLabels) as Metric[]).map((value) => (
               <button
                 type="button"
-                key={value}
-                onClick={() => setMetric(value)}
+                  key={value}
+                  onClick={() => setMetric(value)}
                 className={`rounded-md px-3 py-2 text-xs font-semibold transition ${
-                  metric === value
+                    metric === value
                     ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
+                    : "text-slate-300 hover:bg-white/10 hover:text-white"
+                  }`}
                 aria-pressed={metric === value}
               >
                 {metricLabels[value]}
               </button>
             ))}
           </div>
-          <button
-            type="button"
-            onClick={() => setExpanded((value) => !value)}
-            className="grid size-10 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
-            aria-label={expanded ? "Close expanded chart" : "Open chart fullscreen"}
-            aria-pressed={expanded}
-          >
-            {expanded ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
-          </button>
         </div>
       </div>
       <div
         ref={chartShell}
-        className={`bg-white p-1.5 sm:p-3 ${
-          expanded
-            ? "h-[calc(100dvh-88px)] max-h-none sm:h-[calc(100dvh-96px)]"
-            : "h-[58vh] min-h-[420px] max-h-[700px] sm:h-[72vh] sm:min-h-[650px] sm:max-h-[920px]"
-        }`}
+        className="h-[58vh] min-h-[420px] max-h-[700px] bg-[#0f172a] p-1.5 sm:h-[72vh] sm:min-h-[650px] sm:max-h-[920px] sm:p-3"
       >
         <Plot
           key={`${date}-${metric}-${compactLabels ? "compact" : "regular"}`}

@@ -16,9 +16,15 @@ export type MarketSession = {
   date: string;
   file: string;
   report?: string;
+  marketCloseChart?: string;
+  indexClose?: number;
+  indexChange?: number | null;
+  indexPoints?: number | null;
 };
 
 export type MarketIndex = {
   latest: string;
   sessions: MarketSession[];
 };
+
+export type TickerHistory = Record<string, number[]>;

@@ -79,8 +79,8 @@ function LeaderTable({
   measure: (row: ReportRow) => string;
 }) {
   return (
-    <section>
-      <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-slate-900 sm:px-6 sm:text-xl">
+    <section className="border-t border-slate-100 pb-1">
+      <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:px-6 sm:text-xl">
         {title}
       </h3>
       <div className="mx-4 mt-3 overflow-x-auto rounded-xl border border-slate-200 sm:mx-6">
@@ -120,7 +120,7 @@ function LeaderTable({
 
 function MetricCard({ label, value, change }: { label: string; value: string; change?: number }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 sm:p-4">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm sm:p-4">
       <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">{label}</p>
       <p className={`mt-1 text-lg font-bold tracking-[-0.02em] tabular-nums ${change === undefined ? "text-slate-800" : changeClass(change)}`}>
         {value}
@@ -169,14 +169,14 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
   ].filter((row, index, list) => list.findIndex(({ symbol }) => symbol === row.symbol) === index);
 
   return (
-    <section id="daily-report" className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)]">
-      <div className="border-b border-slate-100 px-4 py-5 sm:px-6">
-        <h2 className="text-2xl font-bold tracking-[-0.03em] text-[#203a63] sm:text-3xl">Market close report</h2>
-        <p className="mt-1 text-sm text-slate-500">Calculated directly from the selected KSE-100 market-close data.</p>
+    <section id="daily-report" className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_80px_-42px_rgba(15,23,42,0.55)]">
+      <div className="h-1 bg-[#203a63]" aria-hidden="true" />
+      <div className="border-b border-white/10 bg-[#0f172a] px-4 py-5 sm:px-6">
+        <h2 className="text-2xl font-bold tracking-[-0.03em] text-white sm:text-3xl">Market Close Report</h2>
       </div>
 
-      <section className="px-4 pt-6 sm:px-6">
-        <h3 className="text-lg font-bold tracking-[-0.02em] text-slate-900 sm:text-xl">Market at a glance</h3>
+      <section className="mx-4 mt-6 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:mx-6 sm:p-5">
+        <h3 className="text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:text-xl">Market at a glance</h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <MetricCard label="Advances / declines / unchanged" value={`${advances} / ${declines} / ${unchanged}`} />
           <MetricCard label="Advance–decline ratio" value={declines === 0 ? "∞" : (advances / declines).toFixed(2)} />
@@ -195,8 +195,8 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
       <LeaderTable title="Top 5 estimated traded-value leaders" rows={sortRows(reportRows, "estimatedTradedValue").slice(0, 5)} measure={(row) => `PKR ${compactNumber(row.estimatedTradedValue)}`} />
       <LeaderTable title="Widest intraday ranges" rows={sortRows(reportRows, "intradayRangePercent").slice(0, 5)} measure={(row) => `${row.intradayRangePercent.toFixed(2)}% range`} />
 
-      <section>
-        <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-slate-900 sm:px-6 sm:text-xl">Largest weighted contributors</h3>
+      <section className="border-t border-slate-100">
+        <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:px-6 sm:text-xl">Largest weighted contributors</h3>
         <div className="mx-4 mt-3 overflow-x-auto rounded-xl border border-slate-200 sm:mx-6">
           <table className="w-full min-w-[700px] border-collapse text-left text-xs sm:text-sm">
             <thead className="bg-slate-50 text-[11px] uppercase tracking-[0.06em] text-slate-500"><tr><th className="border-b border-slate-200 px-3 py-3 font-bold">Company</th><th className="border-b border-slate-200 px-3 py-3">Sector</th><th className="border-b border-slate-200 px-3 py-3 text-right">Change</th><th className="border-b border-slate-200 px-3 py-3 text-right">Basket weight</th><th className="border-b border-slate-200 px-3 py-3 text-right">Contribution</th></tr></thead>
@@ -205,8 +205,8 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
         </div>
       </section>
 
-      <section>
-        <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-slate-900 sm:px-6 sm:text-xl">Sector scorecard</h3>
+      <section className="border-t border-slate-100">
+        <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:px-6 sm:text-xl">Sector scorecard</h3>
         <div className="mx-4 mt-3 overflow-x-auto rounded-xl border border-slate-200 sm:mx-6">
           <table className="w-full min-w-[840px] border-collapse text-left text-xs sm:text-sm">
             <thead className="bg-slate-50 text-[11px] uppercase tracking-[0.06em] text-slate-500"><tr><th className="border-b border-slate-200 px-3 py-3 font-bold">Sector</th><th className="border-b border-slate-200 px-3 py-3 text-right">Companies</th><th className="border-b border-slate-200 px-3 py-3 text-right">Weighted move</th><th className="border-b border-slate-200 px-3 py-3 text-right">Market-cap share</th><th className="border-b border-slate-200 px-3 py-3 text-right">A/D/U</th><th className="border-b border-slate-200 px-3 py-3 text-right">Volume</th><th className="border-b border-slate-200 px-3 py-3 text-right">Est. traded value</th></tr></thead>
@@ -215,9 +215,10 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
         </div>
       </section>
 
-      <details className="mx-4 mt-7 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-600 sm:mx-6">
-        <summary className="cursor-pointer font-semibold text-slate-800">How each metric is calculated</summary>
+      <details className="mx-4 mt-7 rounded-xl border border-slate-200 bg-[#f7f9fc] px-4 py-3 text-sm text-slate-600 sm:mx-6">
+        <summary className="cursor-pointer font-semibold text-[#203a63]">How each metric is calculated</summary>
         <ul className="mt-3 list-disc space-y-2 pl-5 leading-6">
+          <li>Heatmap tiles are grouped by sector. Tile size represents market capitalisation or trade volume, depending on the selected view; green indicates a positive daily change and red a negative change.</li>
           <li>Daily percentage change is the CSV&apos;s <code>percent_change</code> field: the move from LDCP to the current close.</li>
           <li>Top gainers and losers are the five highest and lowest daily percentage changes, not the rupee change in price.</li>
           <li>Advances, declines, and unchanged stocks are counts of positive, negative, and zero daily percentage changes. The advance–decline ratio divides advances by declines.</li>
@@ -231,8 +232,8 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
           <li>Sector weighted move is the market-cap-weighted average daily change of sector members. Sector market-cap share is the sector&apos;s market cap divided by the total, while A/D/U is its advances, declines, and unchanged stocks.</li>
         </ul>
       </details>
-      <section className="mx-4 mt-4 rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-600 sm:mx-6">
-        <h3 className="font-semibold text-slate-800">Limitations</h3>
+      <section className="mx-4 mt-4 rounded-xl border border-amber-200/80 bg-amber-50/40 px-4 py-3 text-sm text-slate-600 sm:mx-6">
+        <h3 className="font-semibold text-amber-900">Limitations</h3>
         <ul className="mt-2 list-disc space-y-1 pl-5 leading-6">
           <li>Market-cap-weighted figures use total company market capitalisation, not official KSE-100 free-float index weights. They are analytical estimates rather than official index returns or point contributions.</li>
           <li>Closing price multiplied by volume does not account for individual trade prices.</li>

@@ -4,156 +4,237 @@
     {
       "date": "2026-07-21",
       "file": "/data/daily/kse100_2026-07-21.csv",
+      "indexClose": 176133.56,
+      "indexChange": 0.11699690549067387,
+      "indexPoints": 205.8299999999872,
       "report": "/data/reports/kse100_2026-07-21_summary.md"
     },
     {
       "date": "2026-07-22",
       "file": "/data/daily/kse100_2026-07-22.csv",
+      "indexClose": 174429.92,
+      "indexChange": -0.96724326698443,
+      "indexPoints": -1703.6399999999849,
       "report": "/data/reports/kse100_2026-07-22_summary.md"
     },
     {
       "date": "2026-07-23",
       "file": "/data/daily/kse100_2026-07-23.csv",
+      "indexClose": 171739.44,
+      "indexChange": -1.5424418012689678,
+      "indexPoints": -2690.4800000000105,
       "report": "/data/reports/kse100_2026-07-23_summary.md"
     },
     {
       "date": "2026-07-24",
       "file": "/data/daily/kse100_2026-07-24.csv",
+      "indexClose": 171021.2,
+      "indexChange": -0.41821494235685375,
+      "indexPoints": -718.2399999999907,
       "report": "/data/reports/kse100_2026-07-24_summary.md"
     },
     {
       "date": "2026-07-27",
       "file": "/data/daily/kse100_2026-07-27.csv",
+      "indexClose": 178262.33,
+      "indexChange": 4.234054023711664,
+      "indexPoints": 7241.129999999976,
       "report": "/data/reports/kse100_2026-07-27_summary.md"
     },
     {
       "date": "2026-07-28",
       "file": "/data/daily/kse100_2026-07-28.csv",
+      "indexClose": 177623.88,
+      "indexChange": -0.3581519438234593,
+      "indexPoints": -638.4499999999825,
       "report": "/data/reports/kse100_2026-07-28_summary.md"
     },
     {
       "date": "2026-07-29",
       "file": "/data/daily/kse100_2026-07-29.csv",
+      "indexClose": 176042.98,
+      "indexChange": -0.8900267238841963,
+      "indexPoints": -1580.8999999999942,
       "report": "/data/reports/kse100_2026-07-29_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-07-29_market_close.png"
     },
     {
       "date": "2026-07-30",
       "file": "/data/daily/kse100_2026-07-30.csv",
+      "indexClose": 175547.98,
+      "indexChange": -0.2811813342400771,
+      "indexPoints": -495.0,
       "report": "/data/reports/kse100_2026-07-30_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-07-30_market_close.png"
     },
     {
       "date": "2026-07-31",
       "file": "/data/daily/kse100_2026-07-31.csv",
+      "indexClose": 176094.11,
+      "indexChange": 0.311100133422193,
+      "indexPoints": 546.1299999999756,
       "report": "/data/reports/kse100_2026-07-31_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-07-31_market_close.png"
     },
     {
       "date": "2026-08-03",
       "file": "/data/daily/kse100_2026-08-03.csv",
+      "indexClose": 178200.02,
+      "indexChange": 1.195900305808073,
+      "indexPoints": 2105.9100000000035,
       "report": "/data/reports/kse100_2026-08-03_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-03_market_close.png"
     },
     {
       "date": "2026-08-04",
       "file": "/data/daily/kse100_2026-08-04.csv",
+      "indexClose": 177083.22,
+      "indexChange": -0.6267114897068993,
+      "indexPoints": -1116.7999999999884,
       "report": "/data/reports/kse100_2026-08-04_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-04_market_close.png"
     },
     {
       "date": "2026-08-05",
       "file": "/data/daily/kse100_2026-08-05.csv",
+      "indexClose": 180014.93,
+      "indexChange": 1.6555549419080995,
+      "indexPoints": 2931.709999999992,
       "report": "/data/reports/kse100_2026-08-05_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-05_market_close.png"
     },
     {
       "date": "2026-08-06",
       "file": "/data/daily/kse100_2026-08-06.csv",
+      "indexClose": 181776.59,
+      "indexChange": 0.978618829004918,
+      "indexPoints": 1761.6600000000035,
       "report": "/data/reports/kse100_2026-08-06_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-06_market_close.png"
     },
     {
       "date": "2026-08-07",
       "file": "/data/daily/kse100_2026-08-07.csv",
+      "indexClose": 181430.02,
+      "indexChange": -0.19065711376806682,
+      "indexPoints": -346.570000000007,
       "report": "/data/reports/kse100_2026-08-07_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-07_market_close.png"
     },
     {
       "date": "2026-08-10",
       "file": "/data/daily/kse100_2026-08-10.csv",
+      "indexClose": 181310.28,
+      "indexChange": -0.06599789825300073,
+      "indexPoints": -119.73999999999069,
       "report": "/data/reports/kse100_2026-08-10_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-10_market_close.png"
     },
     {
       "date": "2026-08-11",
       "file": "/data/daily/kse100_2026-08-11.csv",
+      "indexClose": 179846.68,
+      "indexChange": -0.8072349786233834,
+      "indexPoints": -1463.6000000000058,
       "report": "/data/reports/kse100_2026-08-11_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-11_market_close.png"
     },
     {
       "date": "2026-08-12",
       "file": "/data/daily/kse100_2026-08-12.csv",
+      "indexClose": 180311.21,
+      "indexChange": 0.258292229803736,
+      "indexPoints": 464.52999999999884,
       "report": "/data/reports/kse100_2026-08-12_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-12_market_close.png"
     },
     {
       "date": "2026-08-13",
       "file": "/data/daily/kse100_2026-08-13.csv",
+      "indexClose": 180104.61,
+      "indexChange": -0.1145796758837192,
+      "indexPoints": -206.60000000000582,
       "report": "/data/reports/kse100_2026-08-13_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-13_market_close.png"
     },
     {
       "date": "2026-08-17",
       "file": "/data/daily/kse100_2026-08-17.csv",
+      "indexClose": 180502.44,
+      "indexChange": 0.22088829375328523,
+      "indexPoints": 397.8300000000163,
       "report": "/data/reports/kse100_2026-08-17_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-17_market_close.png"
     },
     {
       "date": "2026-08-18",
       "file": "/data/daily/kse100_2026-08-18.csv",
+      "indexClose": 177955.5,
+      "indexChange": -1.4110280171281908,
+      "indexPoints": -2546.9400000000023,
       "report": "/data/reports/kse100_2026-08-18_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-18_market_close.png"
     },
     {
       "date": "2026-08-19",
       "file": "/data/daily/kse100_2026-08-19.csv",
+      "indexClose": 176846.36,
+      "indexChange": -0.6232681765947157,
+      "indexPoints": -1109.140000000014,
       "report": "/data/reports/kse100_2026-08-19_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-19_market_close.png"
     },
     {
       "date": "2026-08-20",
       "file": "/data/daily/kse100_2026-08-20.csv",
+      "indexClose": 176591.76,
+      "indexChange": -0.14396677432318983,
+      "indexPoints": -254.59999999997672,
       "report": "/data/reports/kse100_2026-08-20_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-20_market_close.png"
     },
     {
       "date": "2026-08-21",
       "file": "/data/daily/kse100_2026-08-21.csv",
+      "indexClose": 177166.52,
+      "indexChange": 0.32547384996897133,
+      "indexPoints": 574.7599999999802,
       "report": "/data/reports/kse100_2026-08-21_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-21_market_close.png"
     },
     {
       "date": "2026-08-24",
       "file": "/data/daily/kse100_2026-08-24.csv",
+      "indexClose": 176966.68,
+      "indexChange": -0.11279783561815027,
+      "indexPoints": -199.8399999999965,
       "report": "/data/reports/kse100_2026-08-24_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-24_market_close.png"
     },
     {
       "date": "2026-08-25",
       "file": "/data/daily/kse100_2026-08-25.csv",
+      "indexClose": 177370.7,
+      "indexChange": 0.22830286469748273,
+      "indexPoints": 404.0200000000186,
       "report": "/data/reports/kse100_2026-08-25_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-25_market_close.png"
     },
     {
       "date": "2026-08-27",
       "file": "/data/daily/kse100_2026-08-27.csv",
+      "indexClose": 177322.77,
+      "indexChange": -0.02702250146163765,
+      "indexPoints": -47.93000000002212,
       "report": "/data/reports/kse100_2026-08-27_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-27_market_close.png"
     },
     {
       "date": "2026-08-28",
       "file": "/data/daily/kse100_2026-08-28.csv",
+      "indexClose": 177696.5,
+      "indexChange": 0.2107625546341252,
+      "indexPoints": 373.7300000000105,
       "report": "/data/reports/kse100_2026-08-28_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-08-28_market_close.png"
     }
