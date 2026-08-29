@@ -8,6 +8,8 @@ function signedPercent(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
 }
 
+type SortKey = "symbol" | "price" | "change" | "trend";
+
 function Sparkline({ values, positive }: { values: number[]; positive: boolean }) {
   if (values.length < 2) return <span className="text-xs text-slate-400">No history</span>;
   const min = Math.min(...values);
@@ -19,7 +21,40 @@ function Sparkline({ values, positive }: { values: number[]; positive: boolean }
 export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: TickerHistory }) {
   const [query, setQuery] = useState("");
   const [expandedSymbol, setExpandedSymbol] = useState<string | null>(null);
-  const filteredRows = useMemo(() => rows.filter((row) => `${row.symbol} ${row.company}`.toLowerCase().includes(query.toLowerCase())), [query, rows]);
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const filteredRows = useMemo(() => {
+    const matchingRows = rows.filter((row) => `${row.symbol} ${row.company}`.toLowerCase().includes(query.toLowerCase()));
+    if (!sortKey) return matchingRows;
+    return [...matchingRows].sort((a, b) => {
+      let comparison = 0;
+      if (sortKey === "symbol") comparison = a.symbol.localeCompare(b.symbol);
+      if (sortKey === "price") comparison = a.close - b.close;
+      if (sortKey === "change") comparison = a.percentChange - b.percentChange;
+      if (sortKey === "trend") {
+        const aHistory = history[a.symbol] ?? [];
+        const bHistory = history[b.symbol] ?? [];
+        const aTrend = aHistory.length >= 2 ? aHistory.at(-1)! / aHistory[0] - 1 : 0;
+        const bTrend = bHistory.length >= 2 ? bHistory.at(-1)! / bHistory[0] - 1 : 0;
+        comparison = aTrend - bTrend;
+      }
+      return (sortDirection === "asc" ? comparison : -comparison) || a.symbol.localeCompare(b.symbol);
+    });
+  }, [history, query, rows, sortDirection, sortKey]);
+
+  function sortBy(nextKey: SortKey) {
+    if (sortKey === nextKey) {
+      setSortDirection((direction) => direction === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(nextKey);
+      setSortDirection("asc");
+    }
+  }
+
+  function sortLabel(key: SortKey, label: string) {
+    const active = sortKey === key;
+    return <button type="button" onClick={() => sortBy(key)} className="inline-flex items-center gap-1 font-bold hover:text-white" aria-label={`Sort by ${label}`}><span>{label}</span><span aria-hidden="true" className={active ? "text-white" : "text-slate-500"}>{active ? sortDirection === "asc" ? "↑" : "↓" : "↕"}</span></button>;
+  }
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)]">
@@ -30,7 +65,7 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-0 border-collapse text-sm md:min-w-[720px]">
-          <thead className="bg-[#0f172a] text-[11px] uppercase tracking-[0.06em] text-slate-300"><tr><th className="px-4 py-3 text-left font-bold sm:px-6">Ticker</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">Price</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">Change</th><th className="hidden px-4 py-3 text-right font-bold md:table-cell sm:px-6">30-session trend</th></tr></thead>
+          <thead className="bg-[#0f172a] text-[11px] uppercase tracking-[0.06em] text-slate-300"><tr><th className="px-4 py-3 text-left font-bold sm:px-6">{sortLabel("symbol", "Ticker")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("price", "Price")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("change", "Change")}</th><th className="hidden px-4 py-3 text-right font-bold md:table-cell sm:px-6">{sortLabel("trend", "30-session trend")}</th></tr></thead>
           <tbody>{filteredRows.map((row) => {
             const isExpanded = expandedSymbol === row.symbol;
             const changeColor = row.percentChange > 0 ? "text-emerald-700" : row.percentChange < 0 ? "text-rose-700" : "text-slate-500";
@@ -39,11 +74,11 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
             return <>
               <tr key={row.symbol} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70">
                 <td className="px-4 py-3 sm:px-6">
-                  <button type="button" className="w-full text-left md:pointer-events-none" aria-expanded={isExpanded} onClick={() => setExpandedSymbol(isExpanded ? null : row.symbol)}>
-                    <span className="block font-bold text-[#203a63]">{row.symbol}</span>
-                    <span className="hidden max-w-[300px] truncate text-xs text-slate-500 md:block">{row.company}</span>
-                    <span className="mt-1 flex items-center gap-3 text-xs md:hidden"><span className="font-medium tabular-nums text-slate-700">PKR {row.close.toFixed(2)}</span><span className={`font-semibold tabular-nums ${changeColor}`}>{signedPercent(row.percentChange)}</span><span className="ml-auto text-[10px] font-semibold uppercase tracking-wide text-slate-400">{isExpanded ? "Hide" : "View"}</span></span>
-                  </button>
+                  <div className="flex items-center justify-between gap-3">
+                    <a href={`https://dps.psx.com.pk/company/${encodeURIComponent(row.symbol)}`} target="_blank" rel="noreferrer" className="font-bold text-[#203a63] underline decoration-slate-200 underline-offset-2 hover:text-[#315a8a]">{row.symbol}</a>
+                  </div>
+                  <span className="hidden max-w-[300px] truncate text-xs text-slate-500 md:block">{row.company}</span>
+                  <button type="button" className="mt-1 flex w-full items-center gap-3 text-left text-xs md:hidden" aria-expanded={isExpanded} onClick={() => setExpandedSymbol(isExpanded ? null : row.symbol)}><span className="font-medium tabular-nums text-slate-700">PKR {row.close.toFixed(2)}</span><span className={`font-semibold tabular-nums ${changeColor}`}>{signedPercent(row.percentChange)}</span><span className="ml-auto text-[10px] font-semibold uppercase tracking-wide text-slate-400">{isExpanded ? "Hide" : "View"}</span></button>
                 </td>
                 <td className="hidden px-3 py-3 text-right font-medium tabular-nums text-slate-700 md:table-cell">PKR {row.close.toFixed(2)}</td>
                 <td className={`hidden px-3 py-3 text-right font-semibold tabular-nums md:table-cell ${changeColor}`}>{signedPercent(row.percentChange)}</td>
