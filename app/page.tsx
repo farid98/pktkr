@@ -27,10 +27,10 @@ export default async function Home({
       <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section
           id="market-map"
-          className="mb-4 flex flex-col gap-3 lg:mb-6 lg:flex-row lg:items-center lg:justify-between lg:gap-5"
+          className="mb-4 flex flex-row items-center justify-between gap-2 lg:mb-6 lg:gap-5"
         >
-          <h1 className="text-3xl font-bold tracking-[-0.04em] text-[#203a63] sm:text-4xl">PSX Closing</h1>
-          <div className="flex flex-wrap items-center">
+          <h1 className="whitespace-nowrap text-2xl font-bold tracking-[-0.04em] text-[#203a63] sm:text-4xl">PSX Closing</h1>
+          <div className="flex min-w-0 items-center">
             <DateSelector
               currentDate={date}
               sessions={[...index.sessions].reverse()}

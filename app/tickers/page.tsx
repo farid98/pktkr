@@ -12,14 +12,14 @@ export const metadata = createPageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function TickersPage() {
-  const { date, rows, index } = await getMarketSession();
+  const { rows, index } = await getMarketSession();
   const history = await getMarketTickerHistory(index);
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
       <SiteHeader section="market" active="tickers" />
       <main className="mx-auto max-w-[1180px] px-4 py-8 sm:px-8 sm:py-12">
-        <section className="mb-8 max-w-3xl"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#58749b]">Latest session · {date}</p><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">KSE-100 Tickers</h1><p className="mt-3 text-base leading-7 text-slate-500">Every constituent in one view, with the latest price, daily move, and a compact trend across the last 30 available sessions.</p></section>
+        <section className="mb-6"><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">KSE-100 Tickers</h1><p className="mt-1 text-sm text-slate-500">Prices, daily moves, and 30-session trends.</p></section>
         <TickerBoard rows={rows} history={history} />
       </main>
     </div>
