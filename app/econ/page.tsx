@@ -17,7 +17,7 @@ export default function EconomyPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <SiteHeader section="economy" active="economy" />
+      <SiteHeader active="economy" />
       <main className="mx-auto max-w-[1180px] px-4 py-8 sm:px-8 sm:py-12">
         <section className="mb-10 max-w-3xl">
           <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#58749b]">Pakistan economy</p>

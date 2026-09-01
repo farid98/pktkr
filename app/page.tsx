@@ -22,7 +22,7 @@ export default async function Home({
   const { date, rows, index } = await getMarketSession(requestedDate);
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <SiteHeader section="market" active="market" />
+      <SiteHeader active="market" />
 
       <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section

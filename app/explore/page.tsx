@@ -26,7 +26,7 @@ export default async function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <SiteHeader section="market" active="explore" />
+      <SiteHeader active="explore" />
 
       <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section className="mb-4 sm:mb-6">

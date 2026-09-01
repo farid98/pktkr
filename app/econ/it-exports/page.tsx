@@ -19,7 +19,7 @@ export default async function ItExportsPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <SiteHeader section="economy" active="it-exports" />
+      <SiteHeader active="it-exports" />
       <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-8 sm:py-12">
         <section className="mb-8 max-w-3xl"><p className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#58749b]">Pakistan economy · services exports</p><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">Pakistan&apos;s IT exports are becoming material.</h1><p className="mt-3 text-base leading-7 text-slate-500">Computer-services exports have grown rapidly, reaching roughly $3.2bn in FY2025. That is still much smaller than total merchandise exports, but it is already in the same range as several major goods categories.</p></section>
         <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6"><ItExportAnalysis data={data} comparison={comparison} /></section>

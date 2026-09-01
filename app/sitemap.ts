@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
 
 import { getMarketIndex, getMarketSessionForDate } from "@/lib/market-data";
+import { getBlogPosts } from "@/lib/blog";
 import { siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const index = await getMarketIndex();
+  const blogPosts = await getBlogPosts();
   const sessions = await Promise.all(
     index.sessions.map((session) => getMarketSessionForDate(session.date)),
   );
@@ -30,5 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: new URL("/econ/trade", siteUrl).toString(), changeFrequency: "monthly", priority: 0.8 },
     { url: new URL("/econ/it-exports", siteUrl).toString(), changeFrequency: "monthly", priority: 0.8 },
     { url: new URL("/news", siteUrl).toString(), lastModified: latestModified, changeFrequency: "daily", priority: 0.5 },
+    { url: new URL("/blog", siteUrl).toString(), lastModified: blogPosts[0]?.date, changeFrequency: "weekly", priority: 0.8 },
+    ...blogPosts.map((post) => ({
+      url: new URL(`/blog/${post.slug}`, siteUrl).toString(),
+      lastModified: post.date,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 }

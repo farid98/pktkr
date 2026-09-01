@@ -47,7 +47,7 @@ export default async function PSXClosingArchivePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <SiteHeader section="market" active="market" />
+      <SiteHeader active="market" />
 
       <main className="mx-auto max-w-[1880px] px-3 py-4 sm:px-8 sm:py-10">
         <section id="market-map" className="mb-4 flex flex-col gap-3 lg:mb-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5">

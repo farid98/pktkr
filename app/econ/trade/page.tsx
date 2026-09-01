@@ -26,7 +26,7 @@ export default async function EconPage() {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <SiteHeader section="economy" active="trade" />
+      <SiteHeader active="trade" />
 
       <main className="mx-auto max-w-[1440px] px-3 py-5 sm:px-8 sm:py-10">
         <section className="mb-6 max-w-3xl">
