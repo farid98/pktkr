@@ -1,11 +1,11 @@
 {
-  "date": "2026-08-31",
-  "file": "/data/daily/kse100_2026-08-31.csv",
-  "indexClose": 176975.67,
-  "indexChange": -0.4056523341765206,
-  "indexPoints": -720.8299999999872,
-  "report": "/data/reports/kse100_2026-08-31_summary.md",
-  "marketCloseChart": "/data/charts/kse100_2026-08-31_market_close.png",
+  "date": "2026-09-01",
+  "file": "/data/daily/kse100_2026-09-01.csv",
+  "indexClose": 176466.99,
+  "indexChange": -0.2874293398635097,
+  "indexPoints": -508.6800000000221,
+  "report": "/data/reports/kse100_2026-09-01_summary.md",
+  "marketCloseChart": "/data/charts/kse100_2026-09-01_market_close.png",
   "rowCount": 100,
-  "generatedAt": "2026-08-31T17:23:19+00:00"
+  "generatedAt": "2026-09-01T11:00:22+00:00"
 }
