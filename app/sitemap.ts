@@ -26,12 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: new URL("/", siteUrl).toString(), lastModified: latestModified, changeFrequency: "daily", priority: 1 },
-    { url: new URL("/explore", siteUrl).toString(), lastModified: latestModified, changeFrequency: "daily", priority: 0.8 },
     ...archiveEntries,
-    { url: new URL("/econ", siteUrl).toString(), changeFrequency: "weekly", priority: 0.9 },
-    { url: new URL("/econ/trade", siteUrl).toString(), changeFrequency: "monthly", priority: 0.8 },
-    { url: new URL("/econ/it-exports", siteUrl).toString(), changeFrequency: "monthly", priority: 0.8 },
-    { url: new URL("/news", siteUrl).toString(), lastModified: latestModified, changeFrequency: "daily", priority: 0.5 },
     { url: new URL("/blog", siteUrl).toString(), lastModified: blogPosts[0]?.date, changeFrequency: "weekly", priority: 0.8 },
     ...blogPosts.map((post) => ({
       url: new URL(`/blog/${post.slug}`, siteUrl).toString(),

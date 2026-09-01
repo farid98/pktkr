@@ -1,29 +1,8 @@
+import { MarketHighlights, type MarketMoverRow, type MarketPressureRow } from "@/components/market-highlights";
 import type { MarketIndex, MarketRow } from "@/lib/market-types";
 
 function signedPercent(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
-}
-
-function MoverBars({ rows, direction }: { rows: MarketRow[]; direction: "up" | "down" }) {
-  const movers = [...rows]
-    .filter((row) => direction === "up" ? row.percentChange > 0 : row.percentChange < 0)
-    .sort((left, right) => direction === "up" ? right.percentChange - left.percentChange : left.percentChange - right.percentChange)
-    .slice(0, 5);
-  const max = Math.max(...movers.map((row) => Math.abs(row.percentChange)), 1);
-
-  return (
-    <div className="space-y-2.5 sm:space-y-3.5">
-      {movers.map((row, index) => (
-        <div key={row.symbol} className="grid grid-cols-[48px_1fr_42px] items-center gap-1.5 text-xs sm:grid-cols-[72px_1fr_62px] sm:gap-3 sm:text-sm">
-          <span className="font-bold tracking-tight text-slate-100">{row.symbol}</span>
-          <div className={`h-3 overflow-hidden rounded-full ${direction === "up" ? "bg-emerald-950/80" : "bg-rose-950/80"}`}>
-            <div className={`mover-bar-fill h-full rounded-full ${direction === "up" ? "bg-[#34d399]" : "bg-[#fb7185]"}`} style={{ width: `${(Math.abs(row.percentChange) / max) * 100}%`, animationDelay: `${index * 75}ms` }} />
-          </div>
-          <span className={`text-right font-semibold tabular-nums ${direction === "up" ? "text-[#6ee7b7]" : "text-[#fda4af]"}`}>{signedPercent(row.percentChange)}</span>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 function MiniIndexChart({ values }: { values: number[] }) {
@@ -39,24 +18,33 @@ export function MarketSummary({ date, rows, index }: { date: string; rows: Marke
   const history = index.sessions.filter((candidate) => candidate.indexClose !== undefined).slice(-30).map((candidate) => candidate.indexClose!);
   const indexChange = session?.indexChange;
   const indexPoints = session?.indexPoints;
+  const totalMarketCap = rows.reduce((total, row) => total + row.marketCap, 0);
+  const pressureRows: MarketPressureRow[] = rows
+    .map((row) => ({
+      symbol: row.symbol,
+      percentChange: row.percentChange,
+      contribution: totalMarketCap === 0 ? 0 : row.percentChange * (row.marketCap / totalMarketCap),
+    }));
+  const bulls = pressureRows.filter((row) => row.contribution > 0).sort((left, right) => right.contribution - left.contribution).slice(0, 5);
+  const bears = pressureRows.filter((row) => row.contribution < 0).sort((left, right) => left.contribution - right.contribution).slice(0, 5);
+  const movers: MarketMoverRow[] = rows.map(({ symbol, percentChange }) => ({ symbol, percentChange }));
+  const gainers = movers.filter((row) => row.percentChange > 0).sort((left, right) => right.percentChange - left.percentChange).slice(0, 5);
+  const losers = movers.filter((row) => row.percentChange < 0).sort((left, right) => left.percentChange - right.percentChange).slice(0, 5);
 
   return (
     <>
       <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="index-summary-title">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)] lg:items-center">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(112px,0.7fr)] items-center gap-3 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
           <div>
-            <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <h2 id="index-summary-title" className="text-4xl font-bold tracking-[-0.05em] text-[#203a63] sm:text-5xl">{session?.indexClose?.toLocaleString("en-PK", { maximumFractionDigits: 2 }) ?? "—"}</h2>
-              <span className={`text-lg font-bold tabular-nums ${indexChange == null ? "text-slate-500" : indexChange > 0 ? "text-emerald-600" : indexChange < 0 ? "text-rose-600" : "text-slate-500"}`}>{indexChange == null || indexPoints == null ? "Change unavailable" : `${signedPercent(indexChange)} · ${indexPoints >= 0 ? "+" : ""}${indexPoints.toFixed(2)} pts`}</span>
+            <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 sm:mt-2 sm:gap-x-4">
+              <h2 id="index-summary-title" className="text-3xl font-bold tracking-[-0.05em] text-[#203a63] sm:text-5xl">{session?.indexClose?.toLocaleString("en-PK", { maximumFractionDigits: 2 }) ?? "—"}</h2>
+              <span className={`text-sm font-bold leading-5 tabular-nums sm:text-lg ${indexChange == null ? "text-slate-500" : indexChange > 0 ? "text-emerald-600" : indexChange < 0 ? "text-rose-600" : "text-slate-500"}`}>{indexChange == null || indexPoints == null ? "Change unavailable" : `${signedPercent(indexChange)} · ${indexPoints >= 0 ? "+" : ""}${indexPoints.toFixed(2)} pts`}</span>
             </div>
           </div>
-          <div className="rounded-xl bg-[#0f172a] px-4 py-2.5" title="Last 30 available sessions"><div className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">30-session trend</div><MiniIndexChart values={history} /></div>
+          <div className="rounded-xl bg-[#0f172a] px-2.5 py-2 sm:px-4 sm:py-2.5" title="Last 30 available sessions"><div className="mb-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.12em]">30-session trend</div><MiniIndexChart values={history} /></div>
         </div>
       </section>
-      <section className="mb-6 grid grid-cols-2 gap-2 sm:gap-4" aria-label="Top five KSE-100 movers">
-        <div className="movers-panel rounded-2xl border border-[#1e293b] bg-[#0f172a] p-3 shadow-lg shadow-slate-900/10 sm:p-6"><div className="mb-4 flex items-baseline justify-between sm:mb-5"><h2 className="text-base font-bold tracking-[-0.03em] text-white sm:text-xl">Top 5 gainers <span className="ml-1 text-[#34d399]">↑</span></h2><span className="hidden text-xs text-slate-400 sm:inline">daily change</span></div><MoverBars rows={rows} direction="up" /></div>
-        <div className="movers-panel rounded-2xl border border-[#1e293b] bg-[#0f172a] p-3 shadow-lg shadow-slate-900/10 sm:p-6"><div className="mb-4 flex items-baseline justify-between sm:mb-5"><h2 className="text-base font-bold tracking-[-0.03em] text-white sm:text-xl">Top 5 losers <span className="ml-1 text-[#fb7185]">↓</span></h2><span className="hidden text-xs text-slate-400 sm:inline">daily change</span></div><MoverBars rows={rows} direction="down" /></div>
-      </section>
+      <MarketHighlights gainers={gainers} losers={losers} bulls={bulls} bears={bears} />
     </>
   );
 }

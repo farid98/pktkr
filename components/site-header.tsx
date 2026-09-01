@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-type ActivePage = "market" | "tickers" | "news" | "explore" | "economy" | "trade" | "it-exports" | "blog";
+type ActivePage = "market" | "tickers" | "blog";
 type NavLink = { href: string; label: string; active: ActivePage };
 
 const primaryLinks: NavLink[] = [

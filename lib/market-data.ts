@@ -28,18 +28,6 @@ export async function getMarketIndex(): Promise<MarketIndex> {
   return JSON.parse(contents) as MarketIndex;
 }
 
-export async function getLatestNews(): Promise<string | null> {
-  try {
-    return await readFile(
-      path.join(DATA_ROOT, "news", "psx_news_briefing_latest.md"),
-      "utf8",
-    );
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-    return null;
-  }
-}
-
 async function loadMarketSession(
   index: MarketIndex,
   date: string,
