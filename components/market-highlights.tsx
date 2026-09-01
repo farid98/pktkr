@@ -17,6 +17,10 @@ function signedPercent(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
 }
 
+function formatBasisPoints(value: number) {
+  return `${value >= 0 ? "+" : "−"}${Math.round(Math.abs(value * 100))} bps`;
+}
+
 function RankedList({ rows, view, direction }: { rows: MarketMoverRow[] | MarketPressureRow[]; view: View; direction: "up" | "down" }) {
   const positive = direction === "up";
   const accentClass = positive ? "text-[#34d399]" : "text-[#fb7185]";
@@ -24,18 +28,23 @@ function RankedList({ rows, view, direction }: { rows: MarketMoverRow[] | Market
   const metric = (row: MarketMoverRow | MarketPressureRow) =>
     view === "pressure" ? Math.abs((row as MarketPressureRow).contribution) : Math.abs(row.percentChange);
   const maxMetric = Math.max(...rows.map(metric), 0.001);
+  const hasContribution = view === "pressure";
 
   return (
     <div className="space-y-2">
       {rows.map((row, index) => {
+        const contribution = hasContribution ? (row as MarketPressureRow).contribution : null;
         return (
-          <div key={row.symbol} className="grid grid-cols-[20px_minmax(0,1fr)_52px] items-center gap-2 text-xs">
+          <div key={row.symbol} className={`grid items-center gap-2 text-xs ${hasContribution ? "grid-cols-[20px_minmax(0,1fr)_66px]" : "grid-cols-[20px_minmax(0,1fr)_52px]"}`}>
             <span className="text-slate-500">{index + 1}</span>
             <span className="relative overflow-hidden rounded-md bg-slate-800/70 px-2 py-2 font-bold text-slate-100">
               <span className={`absolute inset-y-0 left-0 ${fillClass}`} style={{ width: `${(metric(row) / maxMetric) * 100}%` }} />
               <span className="relative">{row.symbol}</span>
             </span>
-            <span className={`text-right font-semibold tabular-nums ${accentClass}`}>{signedPercent(row.percentChange)}</span>
+            <span className="text-right tabular-nums">
+              <span className="block text-[10px] font-semibold text-slate-400">{signedPercent(row.percentChange)}</span>
+              {contribution !== null ? <span className={`block text-sm font-bold ${accentClass}`}>{formatBasisPoints(contribution)}</span> : null}
+            </span>
           </div>
         );
       })}
@@ -66,7 +75,7 @@ export function MarketHighlights({
       <div className="mb-4 flex items-start justify-between gap-3 sm:mb-5">
         <div>
           <h2 className="text-lg font-bold tracking-[-0.03em] text-white">{isMovers ? "Daily movers" : "Market-cap-weighted pressure"}</h2>
-          <p className="mt-1 text-xs text-slate-400">{isMovers ? "Largest percentage moves in the selected session" : "Largest positive and negative pulls on the market-cap basket"}</p>
+          <p className="mt-1 text-xs text-slate-400">{isMovers ? "Largest percentage moves in the selected session" : "Est. basket impact · 1 bp = 0.01%"}</p>
         </div>
         <div className="flex shrink-0 rounded-lg border border-slate-700 bg-slate-900 p-0.5 text-xs font-bold">
           <button type="button" onClick={() => setView("movers")} aria-pressed={isMovers} className={`rounded-md px-2.5 py-1.5 transition sm:px-3 ${isMovers ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}>Movers</button>

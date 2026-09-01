@@ -196,7 +196,7 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
       <LeaderTable title="Widest intraday ranges" rows={sortRows(reportRows, "intradayRangePercent").slice(0, 5)} measure={(row) => `${row.intradayRangePercent.toFixed(2)}% range`} />
 
       <section className="border-t border-slate-100">
-        <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:px-6 sm:text-xl">Largest weighted contributors</h3>
+        <h3 className="px-4 pt-7 text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:px-6 sm:text-xl">Largest weighted contributors (Bulls and Bears)</h3>
         <div className="mx-4 mt-3 overflow-x-auto rounded-xl border border-slate-200 sm:mx-6">
           <table className="w-full min-w-[700px] border-collapse text-left text-xs sm:text-sm">
             <thead className="bg-slate-50 text-[11px] uppercase tracking-[0.06em] text-slate-500"><tr><th className="border-b border-slate-200 px-3 py-3 font-bold">Company</th><th className="border-b border-slate-200 px-3 py-3">Sector</th><th className="border-b border-slate-200 px-3 py-3 text-right">Change</th><th className="border-b border-slate-200 px-3 py-3 text-right">Basket weight</th><th className="border-b border-slate-200 px-3 py-3 text-right">Contribution</th></tr></thead>
