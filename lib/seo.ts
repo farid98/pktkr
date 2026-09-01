@@ -20,13 +20,19 @@ export function createPageMetadata({
   description,
   path,
   imagePath = "/opengraph-image",
+  imageAlt = "pktkr — Pakistan market and economy data",
+  type = "website",
+  publishedTime,
 }: {
   title: string;
   description: string;
   path: string;
   imagePath?: string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  publishedTime?: string;
 }): Metadata {
-  const image = { ...socialImage, url: imagePath };
+  const image = { ...socialImage, url: imagePath, alt: imageAlt };
 
   return {
     title,
@@ -38,8 +44,9 @@ export function createPageMetadata({
       url: path,
       siteName,
       locale: "en_PK",
-      type: "website",
+      type,
       images: [image],
+      ...(type === "article" && publishedTime ? { publishedTime } : {}),
     },
     twitter: {
       card: "summary_large_image",

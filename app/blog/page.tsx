@@ -1,9 +1,7 @@
 import Link from "next/link";
 
-import { DailyReport } from "@/components/daily-report";
 import { SiteHeader } from "@/components/site-header";
 import { getBlogPosts } from "@/lib/blog";
-import { getLatestNews } from "@/lib/market-data";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -24,7 +22,7 @@ function displayDate(value: string) {
 }
 
 export default async function BlogPage() {
-  const [posts, newsMarkdown] = await Promise.all([getBlogPosts(), getLatestNews()]);
+  const posts = await getBlogPosts();
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
@@ -54,17 +52,6 @@ export default async function BlogPage() {
         ) : (
           <p className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">No posts have been published yet.</p>
         )}
-
-        {newsMarkdown ? (
-          <section id="latest-news" className="mt-12">
-            <div className="mb-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#58749b]">Latest briefing</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-[-0.03em] text-[#203a63] sm:text-3xl">Market & economy news</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500">The latest company, market, macroeconomic, and regulatory developments.</p>
-            </div>
-            <DailyReport id="blog-news" markdown={newsMarkdown} />
-          </section>
-        ) : null}
       </main>
     </div>
   );

@@ -14,3 +14,11 @@ flowchart LR
 ````
 
 MDX content is intentionally content-only: do not use `import`, `export`, or JavaScript expressions inside a post.
+
+Link a company symbol to its PSX Data Portal page with the built-in `Ticker` component:
+
+```mdx
+<Ticker symbol="OGDC" />
+```
+
+The August 2026 market wrap-up also uses the built-in `MonthlyMarketHeatmap` component. It accepts literal `startDate`, `endDate`, and optional comma-separated split adjustments such as `adjustments="SRVI:10"`.

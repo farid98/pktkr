@@ -11,6 +11,7 @@ type BlogFrontmatter = {
   summary: string;
   date: string;
   category: string;
+  image?: string;
   tags?: string[];
 };
 
@@ -23,7 +24,7 @@ export type BlogPostContent = BlogPost & { content: string };
 
 function parsePost(slug: string, source: string): BlogPostContent {
   const { data, content } = matter(source);
-  const { title, summary, category, tags = [] } = data as Partial<BlogFrontmatter>;
+  const { title, summary, category, image, tags = [] } = data as Partial<BlogFrontmatter>;
   const rawDate = data.date;
   const date =
     rawDate instanceof Date
@@ -38,13 +39,14 @@ function parsePost(slug: string, source: string): BlogPostContent {
     !date ||
     !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
     typeof category !== "string" ||
+    (image !== undefined && typeof image !== "string") ||
     !Array.isArray(tags) ||
     !tags.every((tag) => typeof tag === "string")
   ) {
     throw new Error(`Invalid frontmatter in blog post: ${slug}`);
   }
 
-  return { slug, title, summary, date, category, tags, content };
+  return { slug, title, summary, date, category, image, tags, content };
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
@@ -72,6 +74,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
           summary: parsed.summary,
           date: parsed.date,
           category: parsed.category,
+          image: parsed.image,
           tags: parsed.tags,
         };
       }),

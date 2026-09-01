@@ -8,7 +8,7 @@ import { blogMdxComponents } from "@/components/blog-mdx";
 import { SiteHeader } from "@/components/site-header";
 import { getBlogPost, getBlogPosts } from "@/lib/blog";
 import { remarkMermaid } from "@/lib/remark-mermaid";
-import { createPageMetadata } from "@/lib/seo";
+import { createPageMetadata, siteName, siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +37,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: post.title,
     description: post.summary,
     path: `/blog/${post.slug}`,
+    imagePath: post.image ?? `/blog/${post.slug}/opengraph-image`,
+    imageAlt: `${post.title} — ${siteName}`,
+    type: "article",
+    publishedTime: `${post.date}T00:00:00+05:00`,
   });
 }
 
@@ -54,6 +58,19 @@ export default async function BlogPostPage({ params }: PageProps) {
       },
     },
   });
+  const imagePath = post.image ?? `/blog/${post.slug}/opengraph-image`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.summary,
+    datePublished: post.date,
+    dateModified: post.date,
+    mainEntityOfPage: new URL(`/blog/${post.slug}`, siteUrl).toString(),
+    image: new URL(imagePath, siteUrl).toString(),
+    author: { "@type": "Organization", name: siteName },
+    publisher: { "@type": "Organization", name: siteName },
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
@@ -61,6 +78,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-8 sm:py-12">
         <article className="rounded-2xl border border-slate-200 bg-white px-5 py-7 shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)] sm:px-10 sm:py-11">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
           <Link href="/blog" className="text-sm font-semibold text-[#203a63] hover:text-slate-900">← All posts</Link>
           <div className="mt-7 border-b border-slate-100 pb-7">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-slate-500"><span className="text-[#58749b]">{post.category}</span><span>{displayDate(post.date)}</span></div>

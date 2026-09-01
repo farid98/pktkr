@@ -1,6 +1,9 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import Image from "next/image";
 
 import { MermaidDiagram } from "@/components/mermaid-diagram";
+import { MonthlyIndexLineChart } from "@/components/monthly-index-line-chart";
+import { MonthlyMarketHeatmap } from "@/components/monthly-market-heatmap";
 
 function Heading({ level, children }: { level: 2 | 3; children: ReactNode }) {
   const className =
@@ -8,6 +11,22 @@ function Heading({ level, children }: { level: 2 | 3; children: ReactNode }) {
       ? "mt-10 text-2xl font-bold tracking-[-0.03em] text-[#203a63] sm:text-3xl"
       : "mt-7 text-xl font-bold tracking-[-0.02em] text-slate-900";
   return level === 2 ? <h2 className={className}>{children}</h2> : <h3 className={className}>{children}</h3>;
+}
+
+function Ticker({ symbol }: { symbol: string }) {
+  const normalizedSymbol = symbol.trim().toUpperCase();
+
+  return (
+    <a
+      href={`https://dps.psx.com.pk/company/${encodeURIComponent(normalizedSymbol)}`}
+      target="_blank"
+      rel="noreferrer"
+      title={`View ${normalizedSymbol} on PSX Data Portal`}
+      className="font-semibold text-[#203a63] underline decoration-slate-300 underline-offset-4 hover:decoration-[#203a63]"
+    >
+      {normalizedSymbol}
+    </a>
+  );
 }
 
 export const blogMdxComponents = {
@@ -34,4 +53,17 @@ export const blogMdxComponents = {
   th: ({ children }: { children: ReactNode }) => <th className="border-b border-slate-200 px-3 py-3 font-bold">{children}</th>,
   td: ({ children }: { children: ReactNode }) => <td className="border-b border-slate-100 px-3 py-3 text-slate-700 last:border-b-0">{children}</td>,
   MermaidDiagram,
+  Ticker,
+  MonthlyIndexLineChart,
+  MonthlyMarketHeatmap,
+  MonthlyIndexSocialImage: () => (
+    <Image
+      src="/blog/august-2026-kse100-market-wrap/opengraph-image"
+      alt="KSE-100 daily close in August 2026, ending at 176,975.67 after gaining 0.50%"
+      width={1200}
+      height={630}
+      sizes="(max-width: 768px) 100vw, 768px"
+      className="my-6 block w-full rounded-2xl border border-slate-200 shadow-sm"
+    />
+  ),
 };
