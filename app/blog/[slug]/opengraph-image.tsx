@@ -43,13 +43,58 @@ async function getAugustChart() {
   };
 }
 
+function HubcoBriefingImage() {
+  return (
+    <div style={{ background: "#071525", color: "#f8fafc", display: "flex", flexDirection: "column", height: "100%", padding: "52px 64px", width: "100%" }}>
+      <div style={{ alignItems: "center", display: "flex", justifyContent: "space-between" }}>
+        <div style={{ alignItems: "center", display: "flex", fontSize: 30, fontWeight: 800, gap: 14 }}>
+          <div style={{ alignItems: "center", background: "#e2b654", borderRadius: 14, color: "#071525", display: "flex", fontSize: 21, fontWeight: 900, height: 48, justifyContent: "center", width: 48 }}>pk</div>
+          pktkr
+        </div>
+        <div style={{ background: "#10243b", border: "1px solid #27415f", borderRadius: 999, color: "#b8cae1", display: "flex", fontSize: 18, fontWeight: 700, padding: "10px 18px" }}>Corporate briefing · FY26</div>
+      </div>
+
+      <div style={{ display: "flex", flex: 1, flexDirection: "column", justifyContent: "center" }}>
+        <div style={{ color: "#e2b654", display: "flex", fontSize: 28, fontWeight: 800, letterSpacing: "0.08em" }}>HUBCO</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 12 }}>
+          <div style={{ display: "flex", fontSize: 50, fontWeight: 800, letterSpacing: "-0.045em", lineHeight: 1.05 }}>
+            HUBCO FY26: cash returns
+          </div>
+          <div style={{ display: "flex", fontSize: 50, fontWeight: 800, letterSpacing: "-0.045em", lineHeight: 1.05 }}>
+            meet EV ambition
+          </div>
+        </div>
+        <div style={{ color: "#b8cae1", display: "flex", fontSize: 24, lineHeight: 1.35, marginTop: 22 }}>Thar dividends, planned EV assembly and charging, oil & gas, mining—and a FESCO prequalification.</div>
+      </div>
+
+      <div style={{ display: "flex", gap: 12 }}>
+        {[
+          ["FY26 consolidated profit", "PKR 49.6bn", "+8% YoY"],
+          ["Consolidated EPS", "PKR 38.26", "+8% YoY"],
+          ["Thar generation", "3,646 GWh", "delivered in FY26"],
+          ["Gharo EV plant", "25,000 p.a.", "planned capacity · Target COD: 2H 2026"],
+        ].map(([label, value, note]) => (
+          <div key={label} style={{ background: "#10243b", border: "1px solid #27415f", borderRadius: 16, display: "flex", flex: 1, flexDirection: "column", padding: "16px" }}>
+            <div style={{ color: "#9db4ce", display: "flex", fontSize: 14, fontWeight: 700 }}>{label}</div>
+            <div style={{ display: "flex", fontSize: 25, fontWeight: 800, marginTop: 7 }}>{value}</div>
+            <div style={{ color: "#e2b654", display: "flex", fontSize: 13, fontWeight: 700, marginTop: 4 }}>{note}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function OpenGraphImage({ params }: ImageProps) {
   const { slug } = await params;
   const post = await getBlogPost(slug);
   const isAugustWrap = slug === "august-2026-kse100-market-wrap";
+  const isHubcoBriefing = slug === "august-2026-hubco0briefing";
   const chart = isAugustWrap ? await getAugustChart() : null;
   const title = post?.title ?? "pktkr Blog";
   const summary = post?.summary ?? "Data-backed views of Pakistan's stock market.";
+
+  if (isHubcoBriefing) return new ImageResponse(<HubcoBriefingImage />, size);
 
   return new ImageResponse(
     <div style={{ background: "#f7f9fc", color: "#0f172a", display: "flex", flexDirection: "column", height: "100%", padding: "48px 64px", width: "100%" }}>

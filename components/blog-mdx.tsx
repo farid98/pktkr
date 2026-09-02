@@ -29,6 +29,50 @@ function Ticker({ symbol }: { symbol: string }) {
   );
 }
 
+function HubcoPortfolioDiagram() {
+  const businesses = [
+    ["Power generation", "Thar Energy", "330 MW"],
+    ["Power generation", "ThalNova Power Thar", "330 MW"],
+    ["Power generation", "China Power Hub Generation", "1,320 MW"],
+    ["Power generation", "Laraib Energy", "84 MW"],
+    ["Power generation", "Narowal Energy", "225 MW"],
+    ["Oil & gas", "Prime International Oil & Gas", "602 MMscfd E&P operating capacity, including JV partners"],
+    ["Mining", "Sindh Engro Coal Mining", "7.6 MTPA mining capacity"],
+    ["Electric mobility", "Mega Motor", "EV assembly plant under construction"],
+    ["Electric mobility", "Hubco Green", "EV charging infrastructure"],
+  ];
+
+  return (
+    <figure className="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="border-b border-slate-200 bg-slate-50 px-4 py-4 sm:px-6">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#58749b]">HUBCO group footprint</p>
+        <p className="mt-1 font-bold text-[#203a63]">Operating power assets and diversified businesses</p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[620px] border-collapse text-left text-sm">
+          <thead className="bg-slate-50 text-xs uppercase tracking-[0.06em] text-slate-500">
+            <tr>
+              <th className="border-b border-slate-200 px-4 py-3 font-bold">Business</th>
+              <th className="border-b border-slate-200 px-4 py-3 font-bold">Group company / asset</th>
+              <th className="border-b border-slate-200 px-4 py-3 font-bold">Briefing detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            {businesses.map(([business, name, detail], index) => (
+              <tr key={name} className={index === 5 || index === 6 || index === 7 ? "border-t-2 border-slate-200" : ""}>
+                <td className="border-b border-slate-100 px-4 py-3 align-top text-xs font-bold text-[#58749b]">{business}</td>
+                <td className="border-b border-slate-100 px-4 py-3 align-top font-semibold text-slate-800">{name}</td>
+                <td className="border-b border-slate-100 px-4 py-3 align-top text-slate-600">{detail}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <figcaption className="px-4 py-3 text-xs leading-5 text-slate-500 sm:px-6">Source: HUBCO FY26 analyst briefing, “HUBCO’s Footprint” slide. The five power assets total 2,289MW.</figcaption>
+    </figure>
+  );
+}
+
 export const blogMdxComponents = {
   h1: ({ children }: { children: ReactNode }) => (
     <h2 className="mt-10 text-2xl font-bold tracking-[-0.03em] text-[#203a63] sm:text-3xl">{children}</h2>
@@ -53,6 +97,7 @@ export const blogMdxComponents = {
   th: ({ children }: { children: ReactNode }) => <th className="border-b border-slate-200 px-3 py-3 font-bold">{children}</th>,
   td: ({ children }: { children: ReactNode }) => <td className="border-b border-slate-100 px-3 py-3 text-slate-700 last:border-b-0">{children}</td>,
   MermaidDiagram,
+  HubcoPortfolioDiagram,
   Ticker,
   MonthlyIndexLineChart,
   MonthlyMarketHeatmap,
@@ -60,6 +105,16 @@ export const blogMdxComponents = {
     <Image
       src="/blog/august-2026-kse100-market-wrap/opengraph-image"
       alt="KSE-100 daily close in August 2026, ending at 176,975.67 after gaining 0.50%"
+      width={1200}
+      height={630}
+      sizes="(max-width: 768px) 100vw, 768px"
+      className="my-6 block w-full rounded-2xl border border-slate-200 shadow-sm"
+    />
+  ),
+  HubcoBriefingSocialImage: () => (
+    <Image
+      src="/blog/august-2026-hubco0briefing/opengraph-image?v=4"
+      alt="HUBCO FY26 corporate briefing: profit, power portfolio and EV investment highlights"
       width={1200}
       height={630}
       sizes="(max-width: 768px) 100vw, 768px"
