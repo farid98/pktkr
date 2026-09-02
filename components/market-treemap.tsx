@@ -279,7 +279,7 @@ export function MarketTreemap({
         </div>
         <div className="flex items-center gap-2">
           <div
-            className="inline-flex rounded-lg border border-white/10 bg-white/10 p-1"
+            className="flex shrink-0 rounded-lg border border-slate-700 bg-slate-900 p-0.5 text-xs font-bold"
             aria-label="Rectangle size"
           >
             {(Object.keys(metricLabels) as Metric[]).map((value) => (
@@ -287,10 +287,10 @@ export function MarketTreemap({
                 type="button"
                   key={value}
                   onClick={() => setMetric(value)}
-                className={`rounded-md px-3 py-2 text-xs font-semibold transition ${
+                className={`rounded-md px-2.5 py-1.5 transition sm:px-3 ${
                     metric === value
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-300 hover:bg-white/10 hover:text-white"
+                    ? "bg-slate-700 text-white"
+                    : "text-slate-400 hover:text-slate-200"
                   }`}
                 aria-pressed={metric === value}
               >

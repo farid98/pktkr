@@ -18,7 +18,7 @@ export function MarketCloseContent({
 
       <MarketTreemap rows={rows} date={date} />
 
-      <MarketCloseReport rows={rows} />
+      <MarketCloseReport date={date} rows={rows} index={index} />
     </>
   );
 }

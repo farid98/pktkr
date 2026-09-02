@@ -1,4 +1,4 @@
-import type { MarketRow } from "@/lib/market-types";
+import type { MarketIndex, MarketRow } from "@/lib/market-types";
 
 type ReportRow = MarketRow & {
   estimatedTradedValue: number;
@@ -120,16 +120,31 @@ function LeaderTable({
 
 function MetricCard({ label, value, change }: { label: string; value: string; change?: number }) {
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-sm sm:p-4">
-      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">{label}</p>
-      <p className={`mt-1 text-lg font-bold tracking-[-0.02em] tabular-nums ${change === undefined ? "text-slate-800" : changeClass(change)}`}>
+    <div className="rounded-lg border border-slate-200/80 bg-white px-3 py-2.5 shadow-sm">
+      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-500">{label}</p>
+      <p className={`mt-0.5 text-base font-bold tracking-[-0.02em] tabular-nums sm:text-lg ${change === undefined ? "text-slate-800" : changeClass(change)}`}>
         {value}
       </p>
     </div>
   );
 }
 
-export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
+function IndexMetricCard({ close, change, points }: { close?: number; change?: number; points?: number }) {
+  const hasChange = change !== undefined && points !== undefined;
+
+  return (
+    <div className="rounded-lg border border-slate-200/80 bg-white px-3 py-2.5 shadow-sm">
+      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-500">KSE-100 close</p>
+      <p className="mt-0.5 text-base font-bold tracking-[-0.02em] tabular-nums text-slate-800 sm:text-lg">{close?.toLocaleString("en-PK", { maximumFractionDigits: 0 }) ?? "—"}</p>
+      <p className={`mt-0.5 text-[11px] font-semibold tabular-nums ${change === undefined ? "text-slate-500" : changeClass(change)}`}>
+        {hasChange ? `${signedPercent(change)} · ${points >= 0 ? "+" : ""}${points.toFixed(0)} pts` : "Change unavailable"}
+      </p>
+    </div>
+  );
+}
+
+export function MarketCloseReport({ date, rows, index }: { date: string; rows: MarketRow[]; index: MarketIndex }) {
+  const session = index.sessions.find((candidate) => candidate.date === date);
   const totalMarketCap = rows.reduce((total, row) => total + row.marketCap, 0);
   const reportRows = rows.map((row) => {
     const estimatedTradedValue = row.close * row.volume;
@@ -140,9 +155,6 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
   const advances = rows.filter((row) => row.percentChange > 0).length;
   const declines = rows.filter((row) => row.percentChange < 0).length;
   const unchanged = rows.length - advances - declines;
-  const changes = rows.map((row) => row.percentChange).sort((left, right) => left - right);
-  const medianChange = (changes[49] + changes[50]) / 2;
-  const equalWeightChange = rows.reduce((total, row) => total + row.percentChange, 0) / rows.length;
   const weightedChange = reportRows.reduce((total, row) => total + row.basketContribution, 0);
   const totalVolume = rows.reduce((total, row) => total + row.volume, 0);
   const totalTradedValue = reportRows.reduce((total, row) => total + row.estimatedTradedValue, 0);
@@ -175,13 +187,11 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
         <h2 className="text-2xl font-bold tracking-[-0.03em] text-white sm:text-3xl">Market Close Report</h2>
       </div>
 
-      <section className="mx-4 mt-6 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:mx-6 sm:p-5">
-        <h3 className="text-lg font-bold tracking-[-0.02em] text-[#203a63] sm:text-xl">Market at a glance</h3>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mx-4 mt-5 rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 sm:mx-6 sm:p-4">
+        <h3 className="text-base font-bold tracking-[-0.02em] text-[#203a63] sm:text-lg">Market at a glance</h3>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          <IndexMetricCard close={session?.indexClose} change={session?.indexChange ?? undefined} points={session?.indexPoints ?? undefined} />
           <MetricCard label="Advances / declines / unchanged" value={`${advances} / ${declines} / ${unchanged}`} />
-          <MetricCard label="Advance–decline ratio" value={declines === 0 ? "∞" : (advances / declines).toFixed(2)} />
-          <MetricCard label="Equal-weight average move" value={signedPercent(equalWeightChange)} change={equalWeightChange} />
-          <MetricCard label="Median stock move" value={signedPercent(medianChange)} change={medianChange} />
           <MetricCard label="Market-cap-weighted basket move" value={signedPercent(weightedChange)} change={weightedChange} />
           <MetricCard label="Total reported volume" value={`${compactNumber(totalVolume)} shares`} />
           <MetricCard label="Estimated traded value" value={`PKR ${compactNumber(totalTradedValue)}`} />
@@ -222,7 +232,6 @@ export function MarketCloseReport({ rows }: { rows: MarketRow[] }) {
           <li>Daily percentage change is the CSV&apos;s <code>percent_change</code> field: the move from LDCP to the current close.</li>
           <li>Top gainers and losers are the five highest and lowest daily percentage changes, not the rupee change in price.</li>
           <li>Advances, declines, and unchanged stocks are counts of positive, negative, and zero daily percentage changes. The advance–decline ratio divides advances by declines.</li>
-          <li>Equal-weight average and median moves summarise the 100 daily percentage changes; each company has equal influence.</li>
           <li>Market-cap-weighted basket move is the sum of each stock&apos;s daily percentage change multiplied by its share of combined market capitalisation.</li>
           <li>Total volume is the sum of reported share volume across the 100 companies. Volume leaders are the five highest reported volumes.</li>
           <li>Estimated traded value is close multiplied by reported volume; it is an approximation, not official turnover.</li>

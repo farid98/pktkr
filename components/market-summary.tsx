@@ -37,8 +37,8 @@ export function MarketSummary({ date, rows, index }: { date: string; rows: Marke
         <div className="grid grid-cols-[minmax(0,1fr)_minmax(112px,0.7fr)] items-center gap-3 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
           <div>
             <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 sm:mt-2 sm:gap-x-4">
-              <h2 id="index-summary-title" className="text-3xl font-bold tracking-[-0.05em] text-[#203a63] sm:text-5xl">{session?.indexClose?.toLocaleString("en-PK", { maximumFractionDigits: 2 }) ?? "—"}</h2>
-              <span className={`text-sm font-bold leading-5 tabular-nums sm:text-lg ${indexChange == null ? "text-slate-500" : indexChange > 0 ? "text-emerald-600" : indexChange < 0 ? "text-rose-600" : "text-slate-500"}`}>{indexChange == null || indexPoints == null ? "Change unavailable" : `${signedPercent(indexChange)} · ${indexPoints >= 0 ? "+" : ""}${indexPoints.toFixed(2)} pts`}</span>
+              <h2 id="index-summary-title" className="text-5xl font-bold tracking-[-0.05em] text-[#203a63] sm:text-6xl">{session?.indexClose?.toLocaleString("en-PK", { maximumFractionDigits: 0 }) ?? "—"}</h2>
+              <span className={`text-sm font-bold leading-5 tabular-nums sm:text-lg ${indexChange == null ? "text-slate-500" : indexChange > 0 ? "text-emerald-600" : indexChange < 0 ? "text-rose-600" : "text-slate-500"}`}>{indexChange == null || indexPoints == null ? "Change unavailable" : `${signedPercent(indexChange)} · ${indexPoints >= 0 ? "+" : ""}${indexPoints.toFixed(0)} pts`}</span>
             </div>
           </div>
           <div className="rounded-xl bg-[#0f172a] px-2.5 py-2 sm:px-4 sm:py-2.5" title="Last 30 available sessions"><div className="mb-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.12em]">30-session trend</div><MiniIndexChart values={history} /></div>

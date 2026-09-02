@@ -74,8 +74,8 @@ export function MarketHighlights({
     <section className="mb-6 rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4 shadow-lg shadow-slate-900/10 sm:p-5" aria-label="KSE-100 market highlights">
       <div className="mb-4 flex items-start justify-between gap-3 sm:mb-5">
         <div>
-          <h2 className="text-lg font-bold tracking-[-0.03em] text-white">{isMovers ? "Daily movers" : "Market-cap-weighted pressure"}</h2>
-          <p className="mt-1 text-xs text-slate-400">{isMovers ? "Largest percentage moves in the selected session" : "Est. basket impact · 1 bp = 0.01%"}</p>
+          <h2 className="text-lg font-bold tracking-[-0.03em] text-white">{isMovers ? "Daily movers" : "Mkt-cap-weighted"}</h2>
+          <p className="mt-1 text-xs text-slate-400">{isMovers ? "" : "Est. basket impact · 1 bp = 0.01%"}</p>
         </div>
         <div className="flex shrink-0 rounded-lg border border-slate-700 bg-slate-900 p-0.5 text-xs font-bold">
           <button type="button" onClick={() => setView("movers")} aria-pressed={isMovers} className={`rounded-md px-2.5 py-1.5 transition sm:px-3 ${isMovers ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}>Movers</button>
