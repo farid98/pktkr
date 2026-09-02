@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 
 import { FirebaseAnalytics } from "@/components/firebase-analytics";
+import { SiteDisclaimer } from "@/components/site-disclaimer";
 import { defaultDescription, siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
@@ -75,6 +76,7 @@ export default function RootLayout({
           <FirebaseAnalytics />
         </Suspense>
         {children}
+        <SiteDisclaimer />
       </body>
     </html>
   );

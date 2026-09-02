@@ -32,7 +32,7 @@ export default async function BlogPage() {
         <section className="mb-8 sm:mb-10">
           <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#58749b]">Research and analysis</p>
           <h1 className="text-3xl font-bold tracking-[-0.04em] text-[#203a63] sm:text-5xl">Blog</h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">Company deep dives, PSX market context, and Pakistan economy analysis. New posts are published from version-controlled MDX files.</p>
+          {/* <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">Company deep dives, PSX market context, and Pakistan economy analysis. New posts are published from version-controlled MDX files.</p> */}
         </section>
 
         {posts.length ? (
