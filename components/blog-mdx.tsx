@@ -101,22 +101,13 @@ export const blogMdxComponents = {
   Ticker,
   MonthlyIndexLineChart,
   MonthlyMarketHeatmap,
-  MonthlyIndexSocialImage: () => (
+  BlogSocialImage: ({ src, alt }: { src: string; alt: string }) => (
     <Image
-      src="/blog/august-2026-kse100-market-wrap/opengraph-image"
-      alt="KSE-100 daily close in August 2026, ending at 176,975.67 after gaining 0.50%"
+      src={src}
+      alt={alt}
       width={1200}
       height={630}
-      sizes="(max-width: 768px) 100vw, 768px"
-      className="my-6 block w-full rounded-2xl border border-slate-200 shadow-sm"
-    />
-  ),
-  HubcoBriefingSocialImage: () => (
-    <Image
-      src="/blog/august-2026-hubco0briefing/opengraph-image?v=4"
-      alt="HUBCO FY26 corporate briefing: profit, power portfolio and EV investment highlights"
-      width={1200}
-      height={630}
+      loading="eager"
       sizes="(max-width: 768px) 100vw, 768px"
       className="my-6 block w-full rounded-2xl border border-slate-200 shadow-sm"
     />

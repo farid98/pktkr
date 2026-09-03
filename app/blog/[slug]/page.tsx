@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 
 import { blogMdxComponents } from "@/components/blog-mdx";
 import { SiteHeader } from "@/components/site-header";
-import { getBlogPost, getBlogPosts } from "@/lib/blog";
+import { getBlogImagePath, getBlogPost, getBlogPosts } from "@/lib/blog";
 import { remarkMermaid } from "@/lib/remark-mermaid";
 import { createPageMetadata, siteName, siteUrl } from "@/lib/seo";
 
@@ -32,13 +32,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = await getBlogPost(slug);
   if (!post) return {};
+  const imageAlt = post.socialCard?.type === "image" && post.socialCard.alt
+    ? post.socialCard.alt
+    : `${post.title} — ${siteName}`;
 
   return createPageMetadata({
     title: post.title,
     description: post.summary,
     path: `/blog/${post.slug}`,
-    imagePath: post.image ?? `/blog/${post.slug}/opengraph-image`,
-    imageAlt: `${post.title} — ${siteName}`,
+    imagePath: getBlogImagePath(post),
+    imageAlt,
     type: "article",
     publishedTime: `${post.date}T00:00:00+05:00`,
   });
@@ -58,7 +61,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       },
     },
   });
-  const imagePath = post.image ?? `/blog/${post.slug}/opengraph-image`;
+  const imagePath = getBlogImagePath(post);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { CalendarDays } from "lucide-react";
 
 import type { MarketSession } from "@/lib/market-types";
 
@@ -16,11 +17,30 @@ function displayDate(value: string) {
 export function DateSelector({
   currentDate,
   sessions,
+  iconOnly = false,
 }: {
   currentDate: string;
   sessions: MarketSession[];
+  iconOnly?: boolean;
 }) {
   const router = useRouter();
+
+  if (iconOnly) {
+    return (
+      <label className="relative grid size-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-slate-200 bg-white text-[#315a8a] shadow-sm transition hover:border-[#a9c3dd] hover:bg-[#eef5fb] focus-within:ring-2 focus-within:ring-slate-200" title="Choose a closing session">
+        <CalendarDays aria-hidden="true" size={17} strokeWidth={2.25} />
+        <span className="sr-only">Choose a closing session</span>
+        <select
+          aria-label="Choose a closing session"
+          className="absolute inset-0 size-full cursor-pointer opacity-0"
+          value={currentDate}
+          onChange={(event) => router.push(`/?date=${event.target.value}`)}
+        >
+          {sessions.map(({ date }) => <option value={date} key={date}>{displayDate(date)}</option>)}
+        </select>
+      </label>
+    );
+  }
 
   return (
     <label className="flex items-center gap-2 text-sm font-medium text-slate-600">

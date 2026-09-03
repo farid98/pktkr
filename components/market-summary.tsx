@@ -1,8 +1,19 @@
 import { MarketHighlights, type MarketMoverRow, type MarketPressureRow } from "@/components/market-highlights";
+import { DateSelector } from "@/components/date-selector";
 import type { MarketIndex, MarketRow } from "@/lib/market-types";
 
 function signedPercent(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+}
+
+function displayDate(value: string) {
+  return new Intl.DateTimeFormat("en-PK", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Asia/Karachi",
+  }).format(new Date(`${value}T12:00:00+05:00`));
 }
 
 function MiniIndexChart({ values }: { values: number[] }) {
@@ -15,7 +26,7 @@ function MiniIndexChart({ values }: { values: number[] }) {
 
 export function MarketSummary({ date, rows, index }: { date: string; rows: MarketRow[]; index: MarketIndex }) {
   const session = index.sessions.find((candidate) => candidate.date === date);
-  const history = index.sessions.filter((candidate) => candidate.indexClose !== undefined).slice(-30).map((candidate) => candidate.indexClose!);
+  const history = index.sessions.filter((candidate) => candidate.date <= date && candidate.indexClose !== undefined).slice(-30).map((candidate) => candidate.indexClose!);
   const indexChange = session?.indexChange;
   const indexPoints = session?.indexPoints;
   const totalMarketCap = rows.reduce((total, row) => total + row.marketCap, 0);
@@ -33,7 +44,11 @@ export function MarketSummary({ date, rows, index }: { date: string; rows: Marke
 
   return (
     <>
-      <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="index-summary-title">
+      <section id="market-map" className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="index-summary-title">
+        <div className="mb-2 flex items-center justify-between gap-3 sm:mb-3">
+          <p className="text-sm font-bold text-[#315a8a]">{displayDate(date)} · Market close</p>
+          <DateSelector currentDate={date} sessions={[...index.sessions].reverse()} iconOnly />
+        </div>
         <div className="grid grid-cols-[minmax(0,1fr)_minmax(112px,0.7fr)] items-center gap-3 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
           <div>
             <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1 sm:mt-2 sm:gap-x-4">
@@ -41,7 +56,7 @@ export function MarketSummary({ date, rows, index }: { date: string; rows: Marke
               <span className={`text-sm font-bold leading-5 tabular-nums sm:text-lg ${indexChange == null ? "text-slate-500" : indexChange > 0 ? "text-emerald-600" : indexChange < 0 ? "text-rose-600" : "text-slate-500"}`}>{indexChange == null || indexPoints == null ? "Change unavailable" : `${signedPercent(indexChange)} · ${indexPoints >= 0 ? "+" : ""}${indexPoints.toFixed(0)} pts`}</span>
             </div>
           </div>
-          <div className="rounded-xl bg-[#0f172a] px-2.5 py-2 sm:px-4 sm:py-2.5" title="Last 30 available sessions"><div className="mb-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.12em]">30-session trend</div><MiniIndexChart values={history} /></div>
+          <div className="rounded-xl bg-[#0f172a] px-2.5 py-2 sm:px-4 sm:py-2.5" title="30 sessions ending on the selected close"><div className="mb-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.12em]">30-session trend</div><MiniIndexChart values={history} /></div>
         </div>
       </section>
       <MarketHighlights gainers={gainers} losers={losers} bulls={bulls} bears={bears} />

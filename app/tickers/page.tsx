@@ -28,7 +28,7 @@ export default async function TickersPage() {
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
       <SiteHeader active="tickers" />
       <main className="mx-auto max-w-[1180px] px-4 py-8 sm:px-8 sm:py-12">
-        <section className="mb-6"><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">KSE-100 Tickers</h1><p className="mt-1 text-sm text-slate-500">{displayDate(date)} closing prices, volumes, and 30-session trends.</p></section>
+        <section className="mb-6"><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">KSE-100 Tickers</h1><p className="mt-1 text-sm text-slate-500"><span className="font-bold text-[#315a8a]">{displayDate(date)} closing prices</span><span> · volumes and 30-session trends.</span></p></section>
         <TickerBoard rows={rows} history={history} />
       </main>
     </div>
