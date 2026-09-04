@@ -339,11 +339,11 @@
     {
       "date": "2026-09-04",
       "file": "/data/daily/kse100_2026-09-04.csv",
-      "asOfUtc": "2026-09-04T09:41:05+00:00",
+      "asOfUtc": "2026-09-04T10:22:18+00:00",
       "isClosing": false,
-      "indexClose": 175092.93,
-      "indexChange": 0.09332321421957612,
-      "indexPoints": 163.25
+      "indexClose": 174880.48,
+      "indexChange": -0.028125587378868833,
+      "indexPoints": -49.19999999998254
     }
   ]
 }
