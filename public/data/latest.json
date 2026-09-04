@@ -1,11 +1,11 @@
 {
   "date": "2026-09-04",
   "file": "/data/daily/kse100_2026-09-04.csv",
-  "asOfUtc": "2026-09-04T07:26:01+00:00",
+  "asOfUtc": "2026-09-04T09:41:05+00:00",
   "isClosing": false,
-  "indexClose": 175198.04,
-  "indexChange": 0.15341021603654248,
-  "indexPoints": 268.36000000001513,
+  "indexClose": 175092.93,
+  "indexChange": 0.09332321421957612,
+  "indexPoints": 163.25,
   "rowCount": 100,
-  "generatedAt": "2026-09-04T07:26:04+00:00"
+  "generatedAt": "2026-09-04T09:41:09+00:00"
 }
