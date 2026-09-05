@@ -17,6 +17,17 @@ const Plot = dynamic(() => import("react-plotly.js"), {
 
 type Metric = "marketCap" | "volume";
 
+function snapshotLabel(isClosing: boolean, asOfUtc: string | undefined) {
+  if (isClosing) return "Market close";
+  if (!asOfUtc) return "Intraday snapshot";
+  return `As of ${new Intl.DateTimeFormat("en-PK", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Karachi",
+    timeZoneName: "short",
+  }).format(new Date(asOfUtc))}`;
+}
+
 const metricLabels: Record<Metric, string> = {
   marketCap: "Market Cap",
   volume: "Trade Volume",
@@ -143,9 +154,13 @@ function makeTrace(
 export function MarketTreemap({
   rows,
   date,
+  isClosing = true,
+  asOfUtc,
 }: {
   rows: MarketRow[];
   date: string;
+  isClosing?: boolean;
+  asOfUtc?: string;
 }) {
   const [metric, setMetric] = useState<Metric>("marketCap");
   const [compactLabels, setCompactLabels] = useState(false);
@@ -273,9 +288,10 @@ export function MarketTreemap({
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-[#34d399] shadow-[0_0_0_4px_rgba(52,211,153,0.12)]" aria-hidden="true" />
             <p className="text-sm font-semibold tracking-[-0.01em] text-white sm:text-base">
-              Market close heat map
+              {isClosing ? "Market close heat map" : "Market heat map"}
             </p>
           </div>
+          <p className="mt-1 text-xs font-medium text-slate-400">{snapshotLabel(isClosing, asOfUtc)}</p>
         </div>
         <div className="flex items-center gap-2">
           <div

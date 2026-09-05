@@ -16,6 +16,16 @@ function displayDate(value: string) {
   }).format(new Date(`${value}T12:00:00+05:00`));
 }
 
+function displaySnapshotTime(value: string | undefined) {
+  if (!value) return "Latest intraday snapshot";
+  return `Updated ${new Intl.DateTimeFormat("en-PK", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Karachi",
+    timeZoneName: "short",
+  }).format(new Date(value))}`;
+}
+
 function MiniIndexChart({ values }: { values: number[] }) {
   if (values.length < 2) return <div className="h-14 rounded-lg bg-slate-100" aria-label="Index history unavailable" />;
   const min = Math.min(...values);
@@ -26,6 +36,7 @@ function MiniIndexChart({ values }: { values: number[] }) {
 
 export function MarketSummary({ date, rows, index }: { date: string; rows: MarketRow[]; index: MarketIndex }) {
   const session = index.sessions.find((candidate) => candidate.date === date);
+  const isClosing = session?.isClosing !== false;
   const history = index.sessions.filter((candidate) => candidate.date <= date && candidate.indexClose !== undefined).slice(-30).map((candidate) => candidate.indexClose!);
   const indexChange = session?.indexChange;
   const indexPoints = session?.indexPoints;
@@ -46,7 +57,7 @@ export function MarketSummary({ date, rows, index }: { date: string; rows: Marke
     <>
       <section id="market-map" className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="index-summary-title">
         <div className="mb-2 flex items-center justify-between gap-3 sm:mb-3">
-          <p className="text-sm font-bold text-[#315a8a]">{displayDate(date)} · Market close</p>
+          <p className="text-sm font-bold text-[#315a8a]">{displayDate(date)} · {isClosing ? "Market close" : displaySnapshotTime(session?.asOfUtc)}</p>
           <DateSelector currentDate={date} sessions={[...index.sessions].reverse()} iconOnly />
         </div>
         <div className="grid grid-cols-[minmax(0,1fr)_minmax(112px,0.7fr)] items-center gap-3 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">

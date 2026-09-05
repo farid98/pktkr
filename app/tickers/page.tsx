@@ -20,15 +20,26 @@ function displayDate(value: string) {
   }).format(new Date(`${value}T12:00:00+05:00`));
 }
 
+function displaySnapshotTime(value: string | undefined) {
+  if (!value) return "Latest intraday snapshot";
+  return `Updated ${new Intl.DateTimeFormat("en-PK", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Karachi",
+    timeZoneName: "short",
+  }).format(new Date(value))}`;
+}
+
 export default async function TickersPage() {
   const { date, rows, index } = await getMarketSession();
   const history = await getMarketTickerHistory(index);
+  const isClosing = index.sessions.find((session) => session.date === date)?.isClosing !== false;
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
       <SiteHeader active="tickers" />
       <main className="mx-auto max-w-[1180px] px-4 py-8 sm:px-8 sm:py-12">
-        <section className="mb-6"><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">KSE-100 Tickers</h1><p className="mt-1 text-sm text-slate-500"><span className="font-bold text-[#315a8a]">{displayDate(date)} closing prices</span><span> · volumes and 30-session trends.</span></p></section>
+        <section className="mb-6"><h1 className="text-3xl font-bold tracking-[-0.045em] text-[#203a63] sm:text-5xl">KSE-100 Tickers</h1><p className="mt-1 text-sm text-slate-500"><span className="font-bold text-[#315a8a]">{displayDate(date)} {isClosing ? "closing prices" : displaySnapshotTime(index.sessions.find((session) => session.date === date)?.asOfUtc)}</span><span> · volumes and 30-session trends.</span></p></section>
         <TickerBoard rows={rows} history={history} />
       </main>
     </div>

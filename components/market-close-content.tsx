@@ -12,13 +12,16 @@ export function MarketCloseContent({
   rows: MarketRow[];
   index: MarketIndex;
 }) {
+  const session = index.sessions.find((candidate) => candidate.date === date);
+  const isClosing = session?.isClosing !== false;
+
   return (
     <>
       <MarketSummary date={date} rows={rows} index={index} />
 
-      <MarketTreemap rows={rows} date={date} />
+      <MarketTreemap rows={rows} date={date} isClosing={isClosing} asOfUtc={session?.asOfUtc} />
 
-      <MarketCloseReport date={date} rows={rows} index={index} />
+      <MarketCloseReport date={date} rows={rows} index={index} isClosing={isClosing} asOfUtc={session?.asOfUtc} />
     </>
   );
 }

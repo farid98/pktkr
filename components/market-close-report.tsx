@@ -134,7 +134,7 @@ function IndexMetricCard({ close, change, points }: { close?: number; change?: n
 
   return (
     <div className="rounded-lg border border-slate-200/80 bg-white px-3 py-2.5 shadow-sm">
-      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-500">KSE-100 close</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-500">KSE-100</p>
       <p className="mt-0.5 text-base font-bold tracking-[-0.02em] tabular-nums text-slate-800 sm:text-lg">{close?.toLocaleString("en-PK", { maximumFractionDigits: 0 }) ?? "—"}</p>
       <p className={`mt-0.5 text-[11px] font-semibold tabular-nums ${change === undefined ? "text-slate-500" : changeClass(change)}`}>
         {hasChange ? `${signedPercent(change)} · ${points >= 0 ? "+" : ""}${points.toFixed(0)} pts` : "Change unavailable"}
@@ -143,7 +143,7 @@ function IndexMetricCard({ close, change, points }: { close?: number; change?: n
   );
 }
 
-export function MarketCloseReport({ date, rows, index }: { date: string; rows: MarketRow[]; index: MarketIndex }) {
+export function MarketCloseReport({ date, rows, index, isClosing = true, asOfUtc }: { date: string; rows: MarketRow[]; index: MarketIndex; isClosing?: boolean; asOfUtc?: string }) {
   const session = index.sessions.find((candidate) => candidate.date === date);
   const totalMarketCap = rows.reduce((total, row) => total + row.marketCap, 0);
   const reportRows = rows.map((row) => {
@@ -184,7 +184,10 @@ export function MarketCloseReport({ date, rows, index }: { date: string; rows: M
     <section id="daily-report" className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_80px_-42px_rgba(15,23,42,0.55)]">
       <div className="h-1 bg-[#203a63]" aria-hidden="true" />
       <div className="border-b border-white/10 bg-[#0f172a] px-4 py-5 sm:px-6">
-        <h2 className="text-2xl font-bold tracking-[-0.03em] text-white sm:text-3xl">Market Close Report</h2>
+        <h2 className="text-2xl font-bold tracking-[-0.03em] text-white sm:text-3xl">{isClosing ? "Market Close Report" : "Market Snapshot"}</h2>
+        <p className="mt-1 text-xs font-medium text-slate-400">
+          {isClosing ? "Market close" : collectionLabel(asOfUtc) ? `As of ${collectionLabel(asOfUtc)}` : "Intraday snapshot"}
+        </p>
       </div>
 
       <section className="mx-4 mt-5 rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 sm:mx-6 sm:p-4">

@@ -1,6 +1,7 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useMemo, useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 
 import type { MarketRow, TickerHistory } from "@/lib/market-types";
 
@@ -14,6 +15,32 @@ function formatVolume(value: number) {
 
 type SortKey = "symbol" | "price" | "change" | "volume" | "trend";
 type SortRule = { key: SortKey; direction: "asc" | "desc" };
+type TickerView = "all" | "starred";
+
+const FAVORITES_STORAGE_KEY = "pktkr.favorite-tickers.v1";
+const FAVORITES_CHANGED_EVENT = "pktkr:favorites-changed";
+
+function subscribeToFavorites(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(FAVORITES_CHANGED_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(FAVORITES_CHANGED_EVENT, onChange);
+  };
+}
+
+function favoriteSnapshot() {
+  return window.localStorage.getItem(FAVORITES_STORAGE_KEY) ?? "[]";
+}
+
+function parseFavorites(snapshot: string) {
+  try {
+    const saved = JSON.parse(snapshot);
+    return Array.isArray(saved) && saved.every((symbol) => typeof symbol === "string") ? new Set(saved) : new Set<string>();
+  } catch {
+    return new Set<string>();
+  }
+}
 
 const sortOptions: Array<{ key: SortKey; label: string }> = [
   { key: "change", label: "Daily change" },
@@ -36,8 +63,15 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
   const [expandedSymbol, setExpandedSymbol] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<SortRule[]>([]);
   const [showSortOptions, setShowSortOptions] = useState(false);
+  const [view, setView] = useState<TickerView>("all");
+  const storedFavorites = useSyncExternalStore(subscribeToFavorites, favoriteSnapshot, () => "[]");
+  const favorites = useMemo(() => parseFavorites(storedFavorites), [storedFavorites]);
+
   const filteredRows = useMemo(() => {
-    const matchingRows = rows.filter((row) => `${row.symbol} ${row.company}`.toLowerCase().includes(query.toLowerCase()));
+    const matchingRows = rows.filter((row) => {
+      const matchesQuery = `${row.symbol} ${row.company}`.toLowerCase().includes(query.toLowerCase());
+      return matchesQuery && (view === "all" || favorites.has(row.symbol));
+    });
     if (!sortRules.length) return matchingRows;
     return [...matchingRows].sort((a, b) => {
       for (const rule of sortRules) {
@@ -57,7 +91,15 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
       }
       return a.symbol.localeCompare(b.symbol);
     });
-  }, [history, query, rows, sortRules]);
+  }, [favorites, history, query, rows, sortRules, view]);
+
+  function toggleFavorite(symbol: string) {
+    const next = new Set(favorites);
+    if (next.has(symbol)) next.delete(symbol);
+    else next.add(symbol);
+    window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...next].sort()));
+    window.dispatchEvent(new Event(FAVORITES_CHANGED_EVENT));
+  }
 
   function sortBy(nextKey: SortKey) {
     if (sortRules[0]?.key === nextKey) {
@@ -90,11 +132,17 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_16px_60px_-38px_rgba(15,23,42,0.45)]">
-      <div className="flex flex-col items-end gap-2 border-b border-slate-100 px-4 py-4 sm:px-6">
+      <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 sm:px-6">
         <label className="sr-only" htmlFor="ticker-search">Search tickers</label>
-        <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="inline-flex self-start rounded-lg bg-slate-100 p-1 text-xs font-bold" role="tablist" aria-label="Ticker view">
+            <button type="button" role="tab" aria-selected={view === "all"} onClick={() => setView("all")} className={`rounded-md px-3 py-1.5 transition ${view === "all" ? "bg-white text-[#203a63] shadow-sm" : "text-slate-500 hover:text-slate-800"}`}>All</button>
+            <button type="button" role="tab" aria-selected={view === "starred"} onClick={() => setView("starred")} className={`rounded-md px-3 py-1.5 transition ${view === "starred" ? "bg-white text-[#203a63] shadow-sm" : "text-slate-500 hover:text-slate-800"}`}>Starred{favorites.size ? ` (${favorites.size})` : ""}</button>
+          </div>
+          <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
           <input id="ticker-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search symbol or company" className="h-10 min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#58749b] focus:ring-2 focus:ring-[#dbe7f2] sm:w-64 sm:flex-none" />
           <button type="button" className="h-10 shrink-0 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 hover:border-slate-300 hover:text-slate-800" aria-expanded={showSortOptions} onClick={() => setShowSortOptions((visible) => !visible)}>Sort</button>
+        </div>
         </div>
         {showSortOptions && <div className="grid w-full grid-cols-[1fr_auto] gap-2 rounded-lg bg-slate-50 p-3">
           <label className="self-center text-xs font-semibold text-slate-600" htmlFor="primary-sort">Primary sort</label>
@@ -105,14 +153,16 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-0 border-collapse text-sm md:min-w-[720px]">
-          <thead className="bg-[#0f172a] text-[11px] uppercase tracking-[0.06em] text-slate-300"><tr><th className="px-4 py-3 text-left font-bold sm:px-6">{sortLabel("symbol", "Ticker")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("price", "Price")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("change", "Change")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("volume", "Volume")}</th><th className="hidden px-4 py-3 text-right font-bold md:table-cell sm:px-6">{sortLabel("trend", "30-session trend")}</th></tr></thead>
+          <thead className="bg-[#0f172a] text-[11px] uppercase tracking-[0.06em] text-slate-300"><tr><th className="w-10 px-2 py-3 text-center font-bold sm:px-3"><span className="sr-only">Favorite</span>★</th><th className="px-4 py-3 text-left font-bold sm:px-6">{sortLabel("symbol", "Ticker")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("price", "Price")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("change", "Change")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("volume", "Volume")}</th><th className="hidden px-4 py-3 text-right font-bold md:table-cell sm:px-6">{sortLabel("trend", "30-session trend")}</th></tr></thead>
           <tbody>{filteredRows.map((row) => {
             const isExpanded = expandedSymbol === row.symbol;
+            const isFavorite = favorites.has(row.symbol);
             const changeColor = row.percentChange > 0 ? "text-emerald-700" : row.percentChange < 0 ? "text-rose-700" : "text-slate-500";
             const tickerHistory = history[row.symbol] ?? [];
             const trendPositive = tickerHistory.length >= 2 ? tickerHistory[tickerHistory.length - 1] >= tickerHistory[0] : row.percentChange >= 0;
             return <Fragment key={row.symbol}>
               <tr className="cursor-pointer border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#58749b]" tabIndex={0} role="button" aria-expanded={isExpanded} onClick={() => setExpandedSymbol(isExpanded ? null : row.symbol)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setExpandedSymbol(isExpanded ? null : row.symbol); } }}>
+                <td className="px-2 py-3 text-center sm:px-3"><button type="button" onClick={(event) => { event.stopPropagation(); toggleFavorite(row.symbol); }} className={`rounded p-1 text-lg leading-none transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58749b] ${isFavorite ? "text-amber-400 hover:text-amber-500" : "text-slate-300 hover:text-amber-400"}`} aria-label={`${isFavorite ? "Remove" : "Add"} ${row.symbol} ${isFavorite ? "from" : "to"} favorites`} aria-pressed={isFavorite}>{isFavorite ? "★" : "☆"}</button></td>
                 <td className="px-4 py-3 sm:px-6">
                   <div className="flex items-center justify-between gap-3">
                     <a href={`https://dps.psx.com.pk/company/${encodeURIComponent(row.symbol)}`} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()} className="font-bold text-[#203a63] underline decoration-slate-200 underline-offset-2 hover:text-[#315a8a]">{row.symbol}</a>
@@ -123,9 +173,9 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
                 <td className="hidden px-3 py-3 text-right font-medium tabular-nums text-slate-700 md:table-cell">PKR {row.close.toFixed(2)}</td>
                 <td className={`hidden px-3 py-3 text-right font-semibold tabular-nums md:table-cell ${changeColor}`}>{signedPercent(row.percentChange)}</td>
                 <td className="hidden px-3 py-3 text-right font-medium tabular-nums text-slate-600 md:table-cell">{formatVolume(row.volume)}</td>
-                <td className="px-2 py-3 sm:px-6 md:table-cell"><div className="flex justify-end"><Sparkline values={tickerHistory} positive={trendPositive} /></div></td>
+                <td className="px-2 py-3 sm:px-6 md:table-cell"><div className="flex justify-end"><Link href={`/tickers/${encodeURIComponent(row.symbol)}`} onClick={(event) => event.stopPropagation()} className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58749b]" aria-label={`Open ${row.symbol} price chart`}><Sparkline values={tickerHistory} positive={trendPositive} /></Link></div></td>
               </tr>
-              {isExpanded && <tr className="border-b border-slate-100 bg-slate-50/60 md:hidden"><td colSpan={5} className="px-4 pb-4 pt-1"><div className="flex items-center justify-between gap-4"><span className="text-xs text-slate-500">{row.company}</span><span className="shrink-0 text-xs tabular-nums text-slate-500">Volume {formatVolume(row.volume)}</span></div></td></tr>}
+              {isExpanded && <tr className="border-b border-slate-100 bg-slate-50/60 md:hidden"><td colSpan={6} className="px-4 pb-4 pt-1"><div className="flex items-center justify-between gap-4"><span className="text-xs text-slate-500">{row.company}</span><span className="shrink-0 text-xs tabular-nums text-slate-500">Volume {formatVolume(row.volume)}</span></div></td></tr>}
             </Fragment>;
           })}</tbody>
         </table>

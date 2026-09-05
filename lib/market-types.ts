@@ -15,6 +15,8 @@ export type MarketRow = {
 export type MarketSession = {
   date: string;
   file: string;
+  asOfUtc?: string;
+  isClosing?: boolean;
   report?: string;
   marketCloseChart?: string;
   indexClose?: number;
@@ -28,3 +30,14 @@ export type MarketIndex = {
 };
 
 export type TickerHistory = Record<string, number[]>;
+
+export type TickerOhlcvPoint = {
+  date: string;
+  open: number | null;
+  high: number | null;
+  low: number | null;
+  close: number;
+  volume: number | null;
+  change?: number | null;
+  percentChange?: number | null;
+};
