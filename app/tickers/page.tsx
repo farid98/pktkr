@@ -32,7 +32,7 @@ function displaySnapshotTime(value: string | undefined) {
 
 export default async function TickersPage() {
   const { date, rows, index } = await getMarketSession();
-  const history = await getMarketTickerHistory(index);
+  const history = await getMarketTickerHistory(index, rows.map(({ symbol }) => symbol));
   const isClosing = index.sessions.find((session) => session.date === date)?.isClosing !== false;
 
   return (

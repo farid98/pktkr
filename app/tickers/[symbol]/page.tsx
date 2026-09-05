@@ -32,7 +32,7 @@ export default async function TickerDetailPage({ params }: PageProps) {
   const session = await getMarketSession();
   const ticker = session.rows.find((row) => row.symbol === symbol.toUpperCase());
   if (!ticker) notFound();
-  const supabaseSeries = await getTickerOhlcvHistoryFromSupabase(ticker.symbol);
+  const supabaseSeries = await getTickerOhlcvHistoryFromSupabase(ticker.symbol, session.date);
   const series = supabaseSeries ?? await getTickerOhlcvHistory(ticker.symbol);
   const latest = series.at(-1);
   const lastPrice = latest?.close ?? ticker.close;
@@ -62,7 +62,7 @@ export default async function TickerDetailPage({ params }: PageProps) {
         </section>
 
         <div className="mt-5"><TickerPriceChart symbol={ticker.symbol} points={series} /></div>
-        <p className="mt-4 text-xs leading-5 text-slate-500">Daily OHLCV history is read from the PSX price repository in Supabase, with the exported static history used only if Supabase is unavailable. Figures are informational only and are not investment advice.</p>
+        <p className="mt-4 text-xs leading-5 text-slate-500">Daily OHLCV history is read from the split- and bonus-adjusted PSX price view in Supabase, with the exported static history used only if Supabase is unavailable. Figures are informational only and are not investment advice.</p>
       </main>
     </div>
   );

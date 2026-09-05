@@ -98,7 +98,15 @@ export async function getMarketSessionForDate(
 
 export async function getMarketTickerHistory(
   index?: MarketIndex,
+  symbols?: string[],
 ): Promise<TickerHistory> {
+  if (symbols?.length) {
+    const entries = await Promise.all(symbols.map(async (symbol) => {
+      const points = await getTickerOhlcvHistory(symbol);
+      return [symbol, points.slice(-30).map(({ close }) => close)] as const;
+    }));
+    return Object.fromEntries(entries);
+  }
   const marketIndex = index ?? await getMarketIndex();
   const sessions = marketIndex.sessions.slice(-30);
   const histories: TickerHistory = {};
@@ -175,13 +183,16 @@ export async function getTickerOhlcvHistory(symbol: string): Promise<TickerOhlcv
   }
 }
 
-export async function getTickerOhlcvHistoryFromSupabase(symbol: string): Promise<TickerOhlcvPoint[] | null> {
+export async function getTickerOhlcvHistoryFromSupabase(
+  symbol: string,
+  expectedLatestDate?: string,
+): Promise<TickerOhlcvPoint[] | null> {
   if (!/^[A-Z0-9-]+$/.test(symbol)) return [];
   const baseUrl = process.env.SUPABASE_URL;
   const secretKey = process.env.SUPABASE_SECRET_KEY;
   if (!baseUrl || !secretKey) return null;
 
-  const endpoint = new URL("/rest/v1/prices", baseUrl);
+  const endpoint = new URL("/rest/v1/adjusted_prices", baseUrl);
   endpoint.searchParams.set("select", "date,open,high,low,close,volume,change,percent_change");
   endpoint.searchParams.set("symbol", `eq.${symbol}`);
   endpoint.searchParams.set("order", "date.asc");
@@ -195,7 +206,7 @@ export async function getTickerOhlcvHistoryFromSupabase(symbol: string): Promise
     });
     if (!response.ok) throw new Error(`Supabase ticker-history request failed: ${response.status}`);
     const rows = await response.json() as Array<Record<string, unknown>>;
-    return rows.flatMap((row): TickerOhlcvPoint[] => {
+    const points = rows.flatMap((row): TickerOhlcvPoint[] => {
       if (typeof row.date !== "string" || !Number.isFinite(row.close)) return [];
       const numberOrNull = (value: unknown) => Number.isFinite(value) ? Number(value) : null;
       return [{
@@ -209,6 +220,8 @@ export async function getTickerOhlcvHistoryFromSupabase(symbol: string): Promise
         percentChange: numberOrNull(row.percent_change),
       }];
     });
+    if (expectedLatestDate && points.at(-1)?.date !== expectedLatestDate) return null;
+    return points;
   } catch (error) {
     console.error("Could not load ticker history from Supabase", error);
     return null;
