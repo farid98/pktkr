@@ -1,7 +1,7 @@
 "use client";
 
-import { Fragment, useMemo, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 
 import type { MarketRow, TickerHistory } from "@/lib/market-types";
 
@@ -59,8 +59,9 @@ function Sparkline({ values, positive }: { values: number[]; positive: boolean }
 }
 
 export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: TickerHistory }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [expandedSymbol, setExpandedSymbol] = useState<string | null>(null);
+  const [openingSymbol, setOpeningSymbol] = useState<string | null>(null);
   const [sortRules, setSortRules] = useState<SortRule[]>([]);
   const [showSortOptions, setShowSortOptions] = useState(false);
   const [view, setView] = useState<TickerView>("all");
@@ -99,6 +100,12 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
     else next.add(symbol);
     window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...next].sort()));
     window.dispatchEvent(new Event(FAVORITES_CHANGED_EVENT));
+  }
+
+  function openTicker(symbol: string) {
+    if (openingSymbol) return;
+    setOpeningSymbol(symbol);
+    router.push(`/tickers/${encodeURIComponent(symbol)}`);
   }
 
   function sortBy(nextKey: SortKey) {
@@ -155,13 +162,12 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
         <table className="w-full min-w-0 border-collapse text-sm md:min-w-[720px]">
           <thead className="bg-[#0f172a] text-[11px] uppercase tracking-[0.06em] text-slate-300"><tr><th className="w-10 px-2 py-3 text-center font-bold sm:px-3"><span className="sr-only">Favorite</span>★</th><th className="px-4 py-3 text-left font-bold sm:px-6">{sortLabel("symbol", "Ticker")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("price", "Price")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("change", "Change")}</th><th className="hidden px-3 py-3 text-right font-bold md:table-cell">{sortLabel("volume", "Volume")}</th><th className="hidden px-4 py-3 text-right font-bold md:table-cell sm:px-6">{sortLabel("trend", "30-session trend")}</th></tr></thead>
           <tbody>{filteredRows.map((row) => {
-            const isExpanded = expandedSymbol === row.symbol;
             const isFavorite = favorites.has(row.symbol);
+            const isOpening = openingSymbol === row.symbol;
             const changeColor = row.percentChange > 0 ? "text-emerald-700" : row.percentChange < 0 ? "text-rose-700" : "text-slate-500";
             const tickerHistory = history[row.symbol] ?? [];
             const trendPositive = tickerHistory.length >= 2 ? tickerHistory[tickerHistory.length - 1] >= tickerHistory[0] : row.percentChange >= 0;
-            return <Fragment key={row.symbol}>
-              <tr className="cursor-pointer border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#58749b]" tabIndex={0} role="button" aria-expanded={isExpanded} onClick={() => setExpandedSymbol(isExpanded ? null : row.symbol)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setExpandedSymbol(isExpanded ? null : row.symbol); } }}>
+            return <tr key={row.symbol} className={`cursor-pointer border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#58749b] ${isOpening ? "bg-slate-50" : ""}`} tabIndex={0} role="link" aria-label={`Open ${row.symbol} price chart`} aria-busy={isOpening} onClick={() => openTicker(row.symbol)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openTicker(row.symbol); } }}>
                 <td className="px-2 py-3 text-center sm:px-3"><button type="button" onClick={(event) => { event.stopPropagation(); toggleFavorite(row.symbol); }} className={`rounded p-1 text-lg leading-none transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58749b] ${isFavorite ? "text-amber-400 hover:text-amber-500" : "text-slate-300 hover:text-amber-400"}`} aria-label={`${isFavorite ? "Remove" : "Add"} ${row.symbol} ${isFavorite ? "from" : "to"} favorites`} aria-pressed={isFavorite}>{isFavorite ? "★" : "☆"}</button></td>
                 <td className="px-4 py-3 sm:px-6">
                   <div className="flex items-center justify-between gap-3">
@@ -173,10 +179,8 @@ export function TickerBoard({ rows, history }: { rows: MarketRow[]; history: Tic
                 <td className="hidden px-3 py-3 text-right font-medium tabular-nums text-slate-700 md:table-cell">PKR {row.close.toFixed(2)}</td>
                 <td className={`hidden px-3 py-3 text-right font-semibold tabular-nums md:table-cell ${changeColor}`}>{signedPercent(row.percentChange)}</td>
                 <td className="hidden px-3 py-3 text-right font-medium tabular-nums text-slate-600 md:table-cell">{formatVolume(row.volume)}</td>
-                <td className="px-2 py-3 sm:px-6 md:table-cell"><div className="flex justify-end"><Link href={`/tickers/${encodeURIComponent(row.symbol)}`} onClick={(event) => event.stopPropagation()} className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58749b]" aria-label={`Open ${row.symbol} price chart`}><Sparkline values={tickerHistory} positive={trendPositive} /></Link></div></td>
-              </tr>
-              {isExpanded && <tr className="border-b border-slate-100 bg-slate-50/60 md:hidden"><td colSpan={6} className="px-4 pb-4 pt-1"><div className="flex items-center justify-between gap-4"><span className="text-xs text-slate-500">{row.company}</span><span className="shrink-0 text-xs tabular-nums text-slate-500">Volume {formatVolume(row.volume)}</span></div></td></tr>}
-            </Fragment>;
+                <td className="px-2 py-3 sm:px-6 md:table-cell"><div className="flex items-center justify-end gap-2">{isOpening && <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#315a8a]" aria-live="polite"><span aria-hidden="true" className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#58749b] border-t-transparent" /><span className="hidden sm:inline">Opening chart…</span><span className="sm:hidden">Loading…</span></span>}<Sparkline values={tickerHistory} positive={trendPositive} /></div></td>
+              </tr>;
           })}</tbody>
         </table>
       </div>
