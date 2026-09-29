@@ -1,5 +1,6 @@
 import { MarketHighlights, type MarketMoverRow, type MarketPressureRow } from "@/components/market-highlights";
 import { DateSelector } from "@/components/date-selector";
+import { IndexTrendToggle } from "@/components/index-trend-toggle";
 import type { MarketIndex, MarketRow } from "@/lib/market-types";
 
 function signedPercent(value: number) {
@@ -26,18 +27,10 @@ function displaySnapshotTime(value: string | undefined) {
   }).format(new Date(value))}`;
 }
 
-function MiniIndexChart({ values }: { values: number[] }) {
-  if (values.length < 2) return <div className="h-14 rounded-lg bg-slate-100" aria-label="Index history unavailable" />;
-  const min = Math.min(...values);
-  const range = Math.max(...values) - min || 1;
-  const points = values.map((value, index) => `${(index / (values.length - 1)) * 100},${52 - ((value - min) / range) * 44}`).join(" ");
-  return <svg viewBox="0 0 100 56" role="img" aria-label="Recent KSE-100 closing levels" className="h-16 w-full overflow-visible"><polyline points={points} fill="none" stroke={values.at(-1)! >= values[0] ? "#34d399" : "#fb7185"} strokeWidth="2.5" vectorEffect="non-scaling-stroke" /></svg>;
-}
-
 export function MarketSummary({ date, rows, index }: { date: string; rows: MarketRow[]; index: MarketIndex }) {
   const session = index.sessions.find((candidate) => candidate.date === date);
   const isClosing = session?.isClosing !== false;
-  const history = index.sessions.filter((candidate) => candidate.date <= date && candidate.indexClose !== undefined).slice(-30).map((candidate) => candidate.indexClose!);
+  const history = index.sessions.filter((candidate) => candidate.date <= date && candidate.indexClose !== undefined).map((candidate) => ({ date: candidate.date, value: candidate.indexClose! }));
   const indexChange = session?.indexChange;
   const indexPoints = session?.indexPoints;
   const totalMarketCap = rows.reduce((total, row) => total + row.marketCap, 0);
@@ -67,7 +60,7 @@ export function MarketSummary({ date, rows, index }: { date: string; rows: Marke
               <span className={`text-sm font-bold leading-5 tabular-nums sm:text-lg ${indexChange == null ? "text-slate-500" : indexChange > 0 ? "text-emerald-600" : indexChange < 0 ? "text-rose-600" : "text-slate-500"}`}>{indexChange == null || indexPoints == null ? "Change unavailable" : `${signedPercent(indexChange)} · ${indexPoints >= 0 ? "+" : ""}${indexPoints.toFixed(0)} pts`}</span>
             </div>
           </div>
-          <div className="rounded-xl bg-[#0f172a] px-2.5 py-2 sm:px-4 sm:py-2.5" title="30 sessions ending on the selected close"><div className="mb-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.12em]">30-session trend</div><MiniIndexChart values={history} /></div>
+          <IndexTrendToggle points={history} />
         </div>
       </section>
       <MarketHighlights gainers={gainers} losers={losers} bulls={bulls} bears={bears} />
