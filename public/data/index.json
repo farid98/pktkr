@@ -1,5 +1,5 @@
 {
-  "latest": "2026-10-05",
+  "latest": "2026-10-06",
   "sessions": [
     {
       "date": "2026-07-21",
@@ -577,6 +577,17 @@
       "indexPoints": -2288.179999999993,
       "report": "/data/reports/kse100_2026-10-05_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-10-05_market_close.png"
+    },
+    {
+      "date": "2026-10-06",
+      "file": "/data/daily/kse100_2026-10-06.csv",
+      "asOfUtc": "2026-10-06T11:00:25+00:00",
+      "isClosing": true,
+      "indexClose": 168460.1,
+      "indexChange": 1.5631711878609567,
+      "indexPoints": 2592.790000000008,
+      "report": "/data/reports/kse100_2026-10-06_summary.md",
+      "marketCloseChart": "/data/charts/kse100_2026-10-06_market_close.png"
     }
   ]
 }
