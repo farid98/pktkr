@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { EstimatedTradedValueChart } from "@/components/estimated-traded-value-chart";
 import { MarketCloseContent } from "@/components/market-close-content";
 import { SiteHeader } from "@/components/site-header";
 import { getBlogPosts } from "@/lib/blog";
@@ -45,6 +46,7 @@ export default async function Home({
           date={date}
           rows={rows}
           index={index}
+          activityChart={<EstimatedTradedValueChart />}
         />
       </main>
     </div>
