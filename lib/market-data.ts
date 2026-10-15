@@ -2,7 +2,7 @@ import { parse } from "csv-parse/sync";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-import type { MarketIndex, MarketRow, TickerHistory, TickerOhlcvPoint } from "@/lib/market-types";
+import type { MarketIndex, MarketRow, TickerHistory, TickerOhlcvPoint, TradingActivityPoint } from "@/lib/market-types";
 
 const DATA_ROOT = path.join(process.cwd(), "public", "data");
 
@@ -226,4 +226,26 @@ export async function getTickerOhlcvHistoryFromSupabase(
     console.error("Could not load ticker history from Supabase", error);
     return null;
   }
+}
+
+
+export async function getMarketTradingActivity(index: MarketIndex, asOf: string): Promise<TradingActivityPoint[]> {
+  const start = new Date(`${asOf}T12:00:00Z`);
+  start.setUTCDate(start.getUTCDate() - 119);
+  const cutoff = start.toISOString().slice(0, 10);
+  // Preserve downloaded history from before the site's daily exports began.
+  const seed = JSON.parse(await readFile(path.join(DATA_ROOT, "traded-value-history.json"), "utf8")) as TradingActivityPoint[];
+  const points = new Map(seed.filter((point) => point.date >= cutoff && point.date <= asOf).map((point) => [point.date, point]));
+  const sessions = index.sessions.filter((session) => session.date >= cutoff && session.date <= asOf);
+  await Promise.all(sessions.map(async (session) => {
+    const { rows } = await loadMarketSession(index, session.date);
+    const valid = rows.every((row) => Number.isFinite(row.close) && row.close > 0 && Number.isFinite(row.volume) && row.volume >= 0);
+    points.set(session.date, {
+      date: session.date,
+      indexClose: Number.isFinite(session.indexClose) ? session.indexClose! : null,
+      estimatedTradedValue: valid ? rows.reduce((total, row) => total + row.close * row.volume, 0) : null,
+      symbols: rows.length,
+    });
+  }));
+  return [...points.values()].sort((a, b) => a.date.localeCompare(b.date));
 }

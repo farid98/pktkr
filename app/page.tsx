@@ -4,7 +4,7 @@ import { EstimatedTradedValueChart } from "@/components/estimated-traded-value-c
 import { MarketCloseContent } from "@/components/market-close-content";
 import { SiteHeader } from "@/components/site-header";
 import { getBlogPosts } from "@/lib/blog";
-import { getMarketSession } from "@/lib/market-data";
+import { getMarketSession, getMarketTradingActivity } from "@/lib/market-data";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -27,6 +27,8 @@ export default async function Home({
     getBlogPosts().then((posts) => posts[0] ?? null),
   ]);
 
+  const activityPoints = await getMarketTradingActivity(index, date);
+
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
       <SiteHeader active="market" />
@@ -46,7 +48,7 @@ export default async function Home({
           date={date}
           rows={rows}
           index={index}
-          activityChart={<EstimatedTradedValueChart />}
+          activityChart={<EstimatedTradedValueChart points={activityPoints} asOf={date} />}
         />
       </main>
     </div>

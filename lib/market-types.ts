@@ -41,3 +41,10 @@ export type TickerOhlcvPoint = {
   change?: number | null;
   percentChange?: number | null;
 };
+
+export type TradingActivityPoint = {
+  date: string;
+  indexClose: number | null;
+  estimatedTradedValue: number | null;
+  symbols: number;
+};
