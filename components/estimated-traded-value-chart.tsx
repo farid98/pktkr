@@ -34,7 +34,7 @@ export function EstimatedTradedValueChart({ points, asOf }: { points: TradingAct
       type: "scatter", mode: "lines", name: "Est. traded value · right", x: visible.map((p) => p.date),
       y: visible.map((p) => p.estimatedTradedValue === null ? null : p.estimatedTradedValue / 1e9),
       customdata: visible.map((p) => p.estimatedTradedValue), yaxis: "y2",
-      line: { color: "#a56719", width: 2, dash: "dash" }, connectgaps: false,
+      line: { color: "#a56719", width: 2 }, connectgaps: false,
       hovertemplate: "Estimated value: PKR %{customdata:,.0f}<extra></extra>",
     },
   ], [visible]);
@@ -63,7 +63,7 @@ export function EstimatedTradedValueChart({ points, asOf }: { points: TradingAct
       </div>
       <div className="mt-4 flex flex-wrap justify-between gap-2 px-4 text-xs font-medium sm:px-6" aria-label="Chart axes">
         <span className="text-[#265f9c]">━ KSE-100 · points · left</span>
-        <span className="text-[#a56719]">┄ Estimated value · PKR billion · right</span>
+        <span className="text-[#a56719]">━ Estimated value · PKR billion · right</span>
       </div>
       <div className="h-[320px] sm:h-[420px]" role="img" aria-label="Interactive daily KSE-100 index and estimated traded value. Hover or tap for each session’s values. Estimated value is the sum of downloaded stock volume multiplied by closing price.">
         {visible.length >= 2 ? <Plot data={data} layout={layout} config={config} useResizeHandler style={{ width: "100%", height: "100%" }} /> : <p className="p-6 text-sm text-slate-500">Not enough history is available for this period.</p>}
