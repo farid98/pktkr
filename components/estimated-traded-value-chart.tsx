@@ -1,8 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import type { Config, Data, Layout } from "plotly.js";
 import type { TradingActivityPoint } from "@/lib/market-types";
 
@@ -16,14 +15,8 @@ function displayDate(date: string) {
 }
 
 export function EstimatedTradedValueChart({ points, asOf }: { points: TradingActivityPoint[]; asOf: string }) {
-  const router = useRouter();
   const [period, setPeriod] = useState<30 | 90 | 120>(120);
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === "visible") router.refresh();
-    }, 5 * 60 * 1000);
-    return () => window.clearInterval(timer);
-  }, [router]);
+
 
   const visible = useMemo(() => {
     const start = new Date(`${asOf}T12:00:00Z`);
