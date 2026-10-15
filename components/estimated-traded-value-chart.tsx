@@ -8,22 +8,22 @@ export function EstimatedTradedValueChart() {
     >
       <div className="px-4 pt-5 sm:px-6">
         <h2 id="estimated-traded-value-heading" className="text-xl font-bold tracking-[-0.02em] text-[#203a63] sm:text-2xl">
-          Estimated daily traded value
+          KSE-100 & estimated traded value
         </h2>
         <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-          17 June–14 October 2026 · PKR billion
+          17 June–14 October 2026
         </p>
       </div>
       <picture>
         <source
           media="(max-width: 639px)"
-          srcSet="/data/charts/estimated-traded-value-2026-06-17-to-2026-10-14-mobile.png"
-          width={720}
-          height={540}
+          srcSet="/data/charts/kse100-and-estimated-traded-value-2026-06-17-to-2026-10-14-mobile.png"
+          width={828}
+          height={648}
         />
         <Image
-        src="/data/charts/estimated-traded-value-2026-06-17-to-2026-10-14.png"
-        alt="Daily estimated traded value across 97–100 downloaded stocks, from 17 June to 14 October 2026. Value is estimated as daily shares traded multiplied by closing price."
+        src="/data/charts/kse100-and-estimated-traded-value-2026-06-17-to-2026-10-14.png"
+        alt="KSE-100 daily closing index on the left axis in points, and estimated daily traded value on the right axis in PKR billions, 17 June–14 October 2026. Estimated value covers 97–100 downloaded stocks and is the sum of volume multiplied by closing price."
         width={2520}
         height={936}
         sizes="(max-width: 640px) calc(100vw - 24px), (max-width: 1880px) calc(100vw - 64px), 1816px"
