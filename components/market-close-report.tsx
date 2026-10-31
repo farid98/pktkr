@@ -231,7 +231,7 @@ export function MarketCloseReport({ date, rows, index, isClosing = true, asOfUtc
       <details className="mx-4 mt-7 rounded-xl border border-slate-200 bg-[#f7f9fc] px-4 py-3 text-sm text-slate-600 sm:mx-6">
         <summary className="cursor-pointer font-semibold text-[#203a63]">How each metric is calculated</summary>
         <ul className="mt-3 list-disc space-y-2 pl-5 leading-6">
-          <li>Heatmap tiles are grouped by sector. Tile size represents market capitalisation or trade volume, depending on the selected view; green indicates a positive daily change and red a negative change.</li>
+          <li>Heatmap tiles are grouped by sector. Tile size represents market capitalisation, trade volume, or approximate traded value (closing price × volume), depending on the selected view; green indicates a positive daily change and red a negative change.</li>
           <li>Daily percentage change is the CSV&apos;s <code>percent_change</code> field: the move from LDCP to the current close.</li>
           <li>Top gainers and losers are the five highest and lowest daily percentage changes, not the rupee change in price.</li>
           <li>Advances, declines, and unchanged stocks are counts of positive, negative, and zero daily percentage changes. The advance–decline ratio divides advances by declines.</li>

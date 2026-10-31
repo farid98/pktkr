@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 type IndexPoint = { date: string; value: number };
-type Period = 30 | 90 | 120;
+type Period = 30 | 60 | 90 | 120;
 
 function datesWithin(points: IndexPoint[], period: Period) {
   const latest = points.at(-1);
@@ -26,16 +26,24 @@ export function IndexTrendToggle({ points }: { points: IndexPoint[] }) {
   const visiblePoints = useMemo(() => datesWithin(points, period), [period, points]);
   const periodChange = visiblePoints.length >= 2 ? ((visiblePoints.at(-1)!.value / visiblePoints[0].value) - 1) * 100 : null;
   const changeClass = periodChange == null ? "text-slate-500" : periodChange >= 0 ? "text-emerald-300" : "text-rose-300";
+  const firstVisibleDate = visiblePoints[0]?.date;
+  const lastVisibleDate = visiblePoints.at(-1)?.date;
+  const availableDays = firstVisibleDate && lastVisibleDate
+    ? Math.round((Date.parse(lastVisibleDate) - Date.parse(firstVisibleDate)) / 86_400_000) + 1
+    : 0;
 
   return (
     <div className="rounded-xl bg-[#0f172a] px-2.5 py-2 sm:px-4 sm:py-2.5" title={`${period} calendar days ending on the selected session`}>
       <div className="mb-0.5 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-slate-400 sm:text-[10px] sm:tracking-[0.12em]">{period}-day trend <span className={`ml-1 tabular-nums ${changeClass}`}>{periodChange == null ? "—" : `${periodChange >= 0 ? "+" : ""}${periodChange.toFixed(2)}%`}</span></span>
         <div className="inline-flex self-start rounded bg-slate-800 p-0.5 sm:self-auto" aria-label="Index trend period">
-          {([30, 90] as const).map((option) => <button key={option} type="button" onClick={() => setPeriod(option)} aria-pressed={period === option} className={`rounded px-1 py-0.5 text-[8px] font-bold transition sm:px-1.5 sm:text-[9px] ${period === option ? "bg-[#58749b] text-white" : "text-slate-400 hover:text-white"}`}>{option}D</button>)}
+          {([30, 60, 90, 120] as const).map((option) => <button key={option} type="button" onClick={() => setPeriod(option)} aria-pressed={period === option} className={`rounded px-1 py-0.5 text-[8px] font-bold transition sm:px-1.5 sm:text-[9px] ${period === option ? "bg-[#58749b] text-white" : "text-slate-400 hover:text-white"}`}>{option}D</button>)}
         </div>
       </div>
       <MiniIndexChart values={visiblePoints.map((point) => point.value)} period={period} />
+      {firstVisibleDate && availableDays < period - 3 && (
+        <p className="text-[9px] text-slate-400">Available from {firstVisibleDate}</p>
+      )}
     </div>
   );
 }

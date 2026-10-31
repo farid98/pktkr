@@ -15,7 +15,7 @@ const Plot = dynamic(() => import("react-plotly.js"), {
   ),
 });
 
-type Metric = "marketCap" | "volume";
+type Metric = "marketCap" | "volume" | "tradedValue";
 
 function snapshotLabel(isClosing: boolean, asOfUtc: string | undefined) {
   if (isClosing) return "Market close";
@@ -31,6 +31,7 @@ function snapshotLabel(isClosing: boolean, asOfUtc: string | undefined) {
 const metricLabels: Record<Metric, string> = {
   marketCap: "Market Cap",
   volume: "Trade Volume",
+  tradedValue: "Value (approx.)",
 };
 
 function signedPercent(value: number, precision = 2) {
@@ -44,7 +45,14 @@ function makeTrace(
 ): Data {
   const sectors = Array.from(new Set(rows.map(({ sector }) => sector))).sort();
   const valueFor = (row: MarketRow) =>
-    Math.max(metric === "marketCap" ? row.marketCap : row.volume, 1);
+    Math.max(
+      metric === "marketCap"
+        ? row.marketCap
+        : metric === "volume"
+          ? row.volume
+          : row.close * row.volume,
+      1,
+    );
   const total = rows.reduce((sum, row) => sum + valueFor(row), 0);
 
   const ids: string[] = ["market"];
@@ -94,6 +102,7 @@ function makeTrace(
         row.percentChange,
         row.marketCap,
         row.volume,
+        row.close * row.volume,
       ]);
       hovertemplate.push(
         "<b>%{customdata[0]}</b><br>" +
@@ -102,7 +111,8 @@ function makeTrace(
           "Close: PKR %{customdata[3]:,.2f}<br>" +
           "Change: %{customdata[4]:+.2f}%<br>" +
           "Volume: %{customdata[6]:,.0f}<br>" +
-          "Market cap: PKR %{customdata[5]:,.0f}<extra></extra>",
+          "Market cap: PKR %{customdata[5]:,.0f}<br>" +
+          "Value (approx.): PKR %{customdata[7]:,.0f}<extra></extra>",
       );
       insideFontSizes.push(0);
     }
@@ -293,7 +303,7 @@ export function MarketTreemap({
           </div>
           <p className="mt-1 text-xs font-medium text-slate-400">{snapshotLabel(isClosing, asOfUtc)}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col items-start gap-1 sm:items-end">
           <div
             className="flex shrink-0 rounded-lg border border-slate-700 bg-slate-900 p-0.5 text-xs font-bold"
             aria-label="Rectangle size"
@@ -314,6 +324,9 @@ export function MarketTreemap({
               </button>
             ))}
           </div>
+          {metric === "tradedValue" && (
+            <p className="text-xs text-slate-400">Close × volume in PKR; not exact transaction value.</p>
+          )}
         </div>
       </div>
       <div
