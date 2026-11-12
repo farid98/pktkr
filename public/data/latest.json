@@ -1,13 +1,13 @@
 {
-  "date": "2026-11-11",
-  "file": "/data/daily/kse100_2026-11-11.csv",
-  "asOfUtc": "2026-11-11T11:00:27+00:00",
+  "date": "2026-11-12",
+  "file": "/data/daily/kse100_2026-11-12.csv",
+  "asOfUtc": "2026-11-12T11:00:27+00:00",
   "isClosing": true,
-  "indexClose": 179083.8,
-  "indexChange": -0.14020668776533185,
-  "indexPoints": -251.44000000000233,
-  "report": "/data/reports/kse100_2026-11-11_summary.md",
-  "marketCloseChart": "/data/charts/kse100_2026-11-11_market_close.png",
+  "indexClose": 177373.76,
+  "indexChange": -0.9548825745265499,
+  "indexPoints": -1710.039999999979,
+  "report": "/data/reports/kse100_2026-11-12_summary.md",
+  "marketCloseChart": "/data/charts/kse100_2026-11-12_market_close.png",
   "rowCount": 100,
-  "generatedAt": "2026-11-11T11:00:59+00:00"
+  "generatedAt": "2026-11-12T11:00:58+00:00"
 }
