@@ -1,5 +1,5 @@
 {
-  "latest": "2026-11-18",
+  "latest": "2026-11-19",
   "sessions": [
     {
       "date": "2026-07-21",
@@ -918,6 +918,17 @@
       "indexPoints": -1223.4000000000233,
       "report": "/data/reports/kse100_2026-11-18_summary.md",
       "marketCloseChart": "/data/charts/kse100_2026-11-18_market_close.png"
+    },
+    {
+      "date": "2026-11-19",
+      "file": "/data/daily/kse100_2026-11-19.csv",
+      "asOfUtc": "2026-11-19T11:00:30+00:00",
+      "isClosing": true,
+      "indexClose": 176772.18,
+      "indexChange": 0.2710523928931785,
+      "indexPoints": 477.8500000000058,
+      "report": "/data/reports/kse100_2026-11-19_summary.md",
+      "marketCloseChart": "/data/charts/kse100_2026-11-19_market_close.png"
     }
   ]
 }
